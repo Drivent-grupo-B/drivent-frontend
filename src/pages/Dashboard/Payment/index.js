@@ -5,9 +5,11 @@ import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
 import useTicket from '../../../hooks/api/useTicket.js';
 import { FaCheckCircle } from 'react-icons/fa';
+import Button from '../../../components/Form/Button.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
+  const [ticketType, setTicketType] = useState({});
 
   return (
     <>
@@ -16,16 +18,15 @@ export default function Payment() {
         <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage>
       ) : (
         <>
-          <EventTypes />
+          <EventTypes ticketType={ticketType} setTicketType={setTicketType} />
+          {ticketType.isRemote ? <TicketSummaryMessage ticketType={ticketType} /> : 'Presencial'}
         </>
       )}
     </>
   );
 }
 
-function EventTypes() {
-  const [ticketType, setTicketType] = useState({});
-
+function EventTypes({ ticketType, setTicketType }) {
   function handleOption(type) {
     setTicketType({
       name: type,
@@ -36,19 +37,31 @@ function EventTypes() {
   }
 
   return (
-    <EventTypeContainer type={ticketType}>
+    <TicketTypeContainer type={ticketType}>
       <h2>Primeiro, escolha sua modalidade de ingresso</h2>
       <div>
-        <PaymentOption onClick={() => handleOption('Presencial')}>
+        <OptionBoxStyle onClick={() => handleOption('Presencial')}>
           <h3>Presencial</h3>
           <span>R$ 250</span>
-        </PaymentOption>
-        <PaymentOption onClick={() => handleOption('Online')}>
+        </OptionBoxStyle>
+        <OptionBoxStyle onClick={() => handleOption('Online')}>
           <h3>Online</h3>
           <span>R$ 100</span>
-        </PaymentOption>
+        </OptionBoxStyle>
       </div>
-    </EventTypeContainer>
+    </TicketTypeContainer>
+  );
+}
+
+function TicketSummaryMessage({ ticketType }) {
+  const formattedPrice = (ticketType.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  return (
+    <Summary>
+      <h2>
+        Fechado! O total ficou em <strong>{formattedPrice}</strong>. Agora é só confirmar:
+      </h2>
+      <Button type="submit">Reservar Ingresso</Button>
+    </Summary>
   );
 }
 
@@ -56,9 +69,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ?
-          <PaymentConfirmed /> :
-          <></> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <></> // TODO: Add Card data insertion display here
       }
     </>
   );
@@ -83,7 +94,7 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
 
-const EventTypeContainer = styled.section`
+const TicketTypeContainer = styled.section`
   h2 {
     font-size: 20px;
     color: #8e8e8e;
@@ -122,7 +133,7 @@ const ConfirmationMessage = styled.div`
 
   & > *:first-child {
     font-size: 40px;
-    color: #36B853;
+    color: #36b853;
   }
 
   h3 {
@@ -130,7 +141,7 @@ const ConfirmationMessage = styled.div`
   }
 `;
 
-const PaymentOption = styled.div`
+const OptionBoxStyle = styled.div`
   width: 145px;
   height: 145px;
   display: flex;
@@ -154,5 +165,15 @@ const PaymentOption = styled.div`
   &:hover {
     cursor: pointer;
     filter: brightness(0.96);
+  }
+`;
+
+const Summary = styled.footer`
+  margin-top: 44px;
+
+  h2 {
+    font-size: 20px;
+    color: #8e8e8e;
+    margin-bottom: 10px;
   }
 `;
