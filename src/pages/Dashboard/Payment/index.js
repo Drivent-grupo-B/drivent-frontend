@@ -34,7 +34,7 @@ export default function Payment() {
           {selectedType === 'Online' ? (
             <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
           ) : (
-            'Presencial: Em breve'
+            <HotelsOptions ticketTypes={ticketTypes} selectedType={selectedType} setTicketTypeId={setTicketTypeId} />
           )}
         </>
       ) : (
@@ -65,6 +65,31 @@ function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeI
   );
 }
 
+function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId }) {
+  const [hotelType, setHotelType] = useState('');
+  if (selectedType === '') return '';
+
+  return (
+    <HotelOptionsContainer>
+      <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
+      <div>
+        {ticketTypes
+          .filter((type) => type.name === 'Presencial')
+          .map((type) => (
+            <IncludesHotelBox
+              type={type}
+              name={type.includesHotel ? 'Com Hotel' : 'Sem Hotel'}
+              key={type.id}
+              setTicketTypeId={setTicketTypeId}
+              hotelType={hotelType}
+              setHotelType={setHotelType}
+            />
+          ))}
+      </div>
+    </HotelOptionsContainer>
+  );
+}
+
 function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
   function handleOption() {
     setSelectedType(type.name);
@@ -76,6 +101,20 @@ function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
       <h3>{type.name}</h3>
       <span>R$ {type.price / 100}</span>
     </OptionBoxStyle>
+  );
+}
+
+function IncludesHotelBox({ type, name, setTicketTypeId, setHotelType, hotelType }) {
+  function handleHotelOption() {
+    setTicketTypeId(type.id);
+    setHotelType(name);
+  }
+
+  return (
+    <HotelBoxStyle hotelType={hotelType} name={name} onClick={handleHotelOption}>
+      <h3>{name}</h3>
+      <span>+ R$ {type.price / 100 - 250}</span>
+    </HotelBoxStyle>
   );
 }
 
@@ -174,6 +213,10 @@ const TicketTypeContainer = styled.section`
   }
 `;
 
+const HotelOptionsContainer = styled(TicketTypeContainer)`
+  margin-top: 44px;
+`;
+
 const PaymentContainer = styled.section`
   margin-top: 30px;
   h2 {
@@ -220,6 +263,11 @@ const OptionBoxStyle = styled.div`
     cursor: pointer;
     filter: brightness(0.96);
   }
+`;
+
+const HotelBoxStyle = styled(OptionBoxStyle)`
+  border: ${(props) => (props.name === props.hotelType ? 'none' : '1px solid #cecece')};
+  background-color: ${(props) => (props.name === props.hotelType ? '#FFEED2' : '#ffffff')};
 `;
 
 const Summary = styled.footer`
