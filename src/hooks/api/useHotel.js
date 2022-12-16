@@ -1,22 +1,22 @@
 import useAsync from '../useAsync';
 import useToken from '../useToken';
 
-// import * as paymentApi from '../../services/paymentApi.js';
+import * as hotelApi from '../../services/hotelApi.js';
 
-// export default function usePayment() {
-//   const token = useToken();
+export default function useHotel() {
+  const token = useToken();
   
-//   const {
-//     data: ticketTypes,
-//     loading: ticketTypesLoading,
-//     error: ticketTypesError,
-//     act: getTicketTypes
-//   } = useAsync(() => paymentApi.getTicketTypes(token));
+  const {
+    data: hotels,
+    loading: hotelsLoading,
+    error: hotelsError,
+    act: getHotels
+  } = useAsync(() => hotelApi.getHotels(token));
 
-//   return {
-//     ticketTypes,
-//     ticketTypesLoading,
-//     ticketTypesError,
-//     getTicketTypes
-//   };
-// }
+  return {
+    hotels,
+    hotelsLoading,
+    hotelsError,
+    getHotels
+  };
+}
