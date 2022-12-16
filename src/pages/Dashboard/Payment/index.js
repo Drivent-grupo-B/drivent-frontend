@@ -55,12 +55,15 @@ function EventTypes({ ticketType, setTicketType }) {
 
 function TicketSummaryMessage({ ticketType }) {
   const formattedPrice = (ticketType.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
   return (
     <Summary>
       <h2>
         Fechado! O total ficou em <strong>{formattedPrice}</strong>. Agora é só confirmar:
       </h2>
-      <Button type="submit">Reservar Ingresso</Button>
+      <Button>
+        Reservar Ingresso
+      </Button>
     </Summary>
   );
 }
