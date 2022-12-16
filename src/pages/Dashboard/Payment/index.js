@@ -5,7 +5,6 @@ import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
 import useTicket from '../../../hooks/api/useTicket.js';
 import { FaCheckCircle } from 'react-icons/fa';
-import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -61,11 +60,7 @@ function EventTypes() {
 }
 
 function PaymentStatus({ ticket }) {
-  const { ticketTypes } = useTicketTypes();
-
-  const type = !ticketTypes? '' : ticketTypes.find((value) => {
-    if(ticket.ticketTypeId === value.id) return value;
-  });
+  const type = ticket.TicketType;
 
   function renderTicketOption() {
     if (type.isRemote) return 'Online';
