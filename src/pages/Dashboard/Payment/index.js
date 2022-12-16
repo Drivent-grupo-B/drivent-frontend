@@ -7,6 +7,8 @@ import useTicket from '../../../hooks/api/useTicket.js';
 import { FaCheckCircle } from 'react-icons/fa';
 import Button from '../../../components/Form/Button.js';
 import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
+import useCreateTicket from '../../../hooks/api/useCreateTicket.js';
+import { toast } from 'react-toastify';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -78,14 +80,24 @@ function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
 }
 
 function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
+  const { postCreatedTicket } = useCreateTicket();
   const formattedPrice = (ticketTypes[2].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  async function reserveTicket() {
+    try {
+      postCreatedTicket({ ticketTypeId });
+      toast('Ticket reservado com sucesso!');
+    } catch (error) {
+      toast('Não foi possível reservar seu ticket!');
+    }
+  }
 
   return (
     <Summary>
       <h2>
         Fechado! O total ficou em <strong>{formattedPrice}</strong>. Agora é só confirmar:
       </h2>
-      <Button>Reservar Ingresso</Button>
+      <Button onClick={reserveTicket}>Reservar Ingresso</Button>
     </Summary>
   );
 }
