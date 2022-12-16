@@ -4,35 +4,47 @@ import styled from 'styled-components';
 import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
 
-import * as paymentApi from '../../../services/paymentApi.js';
-
 export default function Payment() {
-  const [ticketTypes, setTicketTypes] = useState([]);
   const { enrollment } = useEnrollment();
 
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
       {!enrollment ? (
-        <ForbiddenPage>
-          Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso
-        </ForbiddenPage>
+        <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage>
       ) : (
-        <EventTypeContainer>
-          <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-          <div>
-            <PaymentOption>
-              <h3>{enrollment ? 'nada' : 'tem'}</h3>
-              <span>R$ 250</span>
-            </PaymentOption>
-            <PaymentOption>
-              <h3>Online</h3>
-              <span>R$ 100</span>
-            </PaymentOption>
-          </div>
-        </EventTypeContainer>
+        <EventTypes />
       )}
     </>
+  );
+}
+
+function EventTypes() {
+  const [ticketType, setTicketType] = useState({});
+
+  function handleOption(type) {
+    setTicketType({
+      name: type,
+      price: type === 'Online' ? 10000 : 25000,
+      isRemote: type === 'Online' ? true : false,
+      includesHotel: false,
+    });
+  }
+
+  return (
+    <EventTypeContainer type={ticketType}>
+      <h2>Primeiro, escolha sua modalidade de ingresso</h2>
+      <div>
+        <PaymentOption onClick={() => handleOption('Presencial')}>
+          <h3>Presencial</h3>
+          <span>R$ 250</span>
+        </PaymentOption>
+        <PaymentOption onClick={() => handleOption('Online')}>
+          <h3>Online</h3>
+          <span>R$ 100</span>
+        </PaymentOption>
+      </div>
+    </EventTypeContainer>
   );
 }
 
@@ -50,6 +62,14 @@ const EventTypeContainer = styled.section`
     display: flex;
     gap: 24px;
     margin-top: 17px;
+
+    > div:nth-of-type(1) {
+      background-color: ${(props) => (props.type.isRemote ? '#ffffff' : '#FFEED2')};
+    }
+
+    > div:nth-of-type(2) {
+      background-color: ${(props) => (props.type.isRemote ? '#FFEED2' : '#ffffff')};
+    }
   }
 `;
 
@@ -72,5 +92,10 @@ const PaymentOption = styled.div`
   span {
     font-size: 14px;
     color: #898989;
+  }
+
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.96);
   }
 `;
