@@ -21,7 +21,7 @@ export default function Payment() {
         <>
           <EventTypes />
         </>
-      ) : (<PaimentStatus ticket={ ticket }/>)}
+      ) : (<PaymentStatus ticket={ ticket }/>)}
     </>
   );
 }
@@ -82,7 +82,7 @@ function PaymentConfirmed() {
   );
 }
 
-function PaimentStatus({ ticket }) {
+function PaymentStatus({ ticket }) {
   const { ticketTypes } = useTicketTypes();
 
   const type = !ticketTypes? '' : ticketTypes.find((value) => {
@@ -91,10 +91,10 @@ function PaimentStatus({ ticket }) {
 
   return(
     <>
-      <PaimentHead>
+      <PaymentHead>
         Ingresso escolhido
-      </PaimentHead>
-      <PaimentStatusContainer>
+      </PaymentHead>
+      <PaymentStatusContainer>
         {
           type? 
             type.isRemote ?
@@ -110,7 +110,7 @@ function PaimentStatus({ ticket }) {
             :
             ''
         }
-      </PaimentStatusContainer>
+      </PaymentStatusContainer>
     </>
   );
 }
@@ -184,7 +184,7 @@ const PaymentOption = styled.div`
   }
 `;
 
-const PaimentStatusContainer = styled(PaymentOption)`
+const PaymentStatusContainer = styled(PaymentOption)`
   width: 290px;
   height: 108px;
   background: #FFEED2 ;
@@ -201,7 +201,7 @@ const PaimentStatusContainer = styled(PaymentOption)`
     color: #898989;
   }
 `;
-const PaimentHead = styled.div`
+const PaymentHead = styled.div`
   margin: 15px;
   width: 290px;
   font-weight: 400;
