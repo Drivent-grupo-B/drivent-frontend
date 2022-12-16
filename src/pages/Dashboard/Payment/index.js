@@ -67,6 +67,12 @@ function PaymentStatus({ ticket }) {
     if(ticket.ticketTypeId === value.id) return value;
   });
 
+  function renderTicketOption() {
+    if (type.isRemote) return 'Online';
+
+    return type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel';
+  }
+
   return(
     <>
       <PaymentHead>
@@ -74,17 +80,11 @@ function PaymentStatus({ ticket }) {
       </PaymentHead>
       <PaymentStatusContainer>
         {
-          type? 
-            type.isRemote ?
-              <h2>
-                Online
-                <h3>R$ {type.price}</h3>
-              </h2>
-              : 
-              <h2>
-                {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel' }
-                <h3>R$ {type.price}</h3>
-              </h2> 
+          type?
+            <h2>
+              { renderTicketOption() }
+              <h3>R$ {type.price}</h3>
+            </h2>
             :
             ''
         }
