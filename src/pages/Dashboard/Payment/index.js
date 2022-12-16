@@ -3,6 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
 import useEnrollment from '../../../hooks/api/useEnrollment.js';
+import useTicket from '../../../hooks/api/useTicket.js';
+import { FaCheckCircle } from 'react-icons/fa';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -13,7 +15,9 @@ export default function Payment() {
       {!enrollment ? (
         <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage>
       ) : (
-        <EventTypes />
+        <>
+          <EventTypes />
+        </>
       )}
     </>
   );
@@ -48,6 +52,33 @@ function EventTypes() {
   );
 }
 
+function PaymentData({ ticket }) {
+  return (
+    <>
+      {
+        ticket.status === 'PAID' ?
+          <PaymentConfirmed /> :
+          <></> // TODO: Add Card data insertion display here
+      }
+    </>
+  );
+}
+
+function PaymentConfirmed() {
+  return (
+    <PaymentContainer>
+      <h2>Pagamento</h2>
+      <ConfirmationMessage>
+        <FaCheckCircle />
+        <div>
+          <h3>Pagamento confirmado!</h3>
+          <p>Prossiga para escolha de hospedagem e atividades</p>
+        </div>
+      </ConfirmationMessage>
+    </PaymentContainer>
+  );
+}
+
 const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
@@ -70,6 +101,32 @@ const EventTypeContainer = styled.section`
     > div:nth-of-type(2) {
       background-color: ${(props) => (props.type.isRemote ? '#FFEED2' : '#ffffff')};
     }
+  }
+`;
+
+const PaymentContainer = styled.section`
+  margin-top: 30px;
+
+  h2 {
+    font-size: 20px;
+    color: #8e8e8e;
+  }
+`;
+
+const ConfirmationMessage = styled.div`
+  display: flex;
+  gap: 14px;
+  margin-top: 17px;
+  font-size: 16px;
+  line-height: 19px;
+
+  & > *:first-child {
+    font-size: 40px;
+    color: #36B853;
+  }
+
+  h3 {
+    font-weight: 700;
   }
 `;
 
