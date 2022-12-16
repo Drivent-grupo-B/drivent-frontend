@@ -1,23 +1,37 @@
 import { Typography } from '@material-ui/core';
+import { useState } from 'react';
 import styled from 'styled-components';
+import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
+import useEnrollment from '../../../hooks/api/useEnrollment.js';
+
+import * as paymentApi from '../../../services/paymentApi.js';
 
 export default function Payment() {
+  const [ticketTypes, setTicketTypes] = useState([]);
+  const { enrollment } = useEnrollment();
+
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
-      <EventTypeContainer>
-        <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-        <div>
-          <PaymentOption>
-            <h3>Presencial</h3>
-            <span>R$ 250</span>
-          </PaymentOption>
-          <PaymentOption>
-            <h3>Online</h3>
-            <span>R$ 100</span>
-          </PaymentOption>
-        </div>
-      </EventTypeContainer>
+      {!enrollment ? (
+        <ForbiddenPage>
+          Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso
+        </ForbiddenPage>
+      ) : (
+        <EventTypeContainer>
+          <h2>Primeiro, escolha sua modalidade de ingresso</h2>
+          <div>
+            <PaymentOption>
+              <h3>{enrollment ? 'nada' : 'tem'}</h3>
+              <span>R$ 250</span>
+            </PaymentOption>
+            <PaymentOption>
+              <h3>Online</h3>
+              <span>R$ 100</span>
+            </PaymentOption>
+          </div>
+        </EventTypeContainer>
+      )}
     </>
   );
 }
