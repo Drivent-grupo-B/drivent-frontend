@@ -9,19 +9,24 @@ import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
-
   const { ticket } = useTicket();
+
+  function renderEventOrPayment() {
+    return (
+      !ticket ?
+        <EventTypes /> :
+        <PaymentStatus ticket={ticket} />
+    );
+  }
 
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
-      {!enrollment ? (
-        <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage>
-      ) : !ticket? (
-        <>
-          <EventTypes />
-        </>
-      ) : (<PaimentStatus ticket={ ticket }/>)}
+      {
+        !enrollment ? 
+          <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage> : 
+          renderEventOrPayment()
+      }
     </>
   );
 }
@@ -55,6 +60,40 @@ function EventTypes() {
   );
 }
 
+function PaymentStatus({ ticket }) {
+  const { ticketTypes } = useTicketTypes();
+
+  const type = !ticketTypes? '' : ticketTypes.find((value) => {
+    if(ticket.ticketTypeId === value.id) return value;
+  });
+
+  return(
+    <>
+      <PaymentHead>
+        Ingresso escolhido
+      </PaymentHead>
+      <PaymentStatusContainer>
+        {
+          type? 
+            type.isRemote ?
+              <h2>
+                Online
+                <h3>R$ {type.price}</h3>
+              </h2>
+              : 
+              <h2>
+                {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel' }
+                <h3>R$ {type.price}</h3>
+              </h2> 
+            :
+            ''
+        }
+      </PaymentStatusContainer>
+      <PaymentData ticket={ticket} />
+    </>
+  );
+}
+
 function PaymentData({ ticket }) {
   return (
     <>
@@ -79,39 +118,6 @@ function PaymentConfirmed() {
         </div>
       </ConfirmationMessage>
     </PaymentContainer>
-  );
-}
-
-function PaimentStatus({ ticket }) {
-  const { ticketTypes } = useTicketTypes();
-
-  const type = !ticketTypes? '' : ticketTypes.find((value) => {
-    if(ticket.ticketTypeId === value.id) return value;
-  });
-
-  return(
-    <>
-      <PaimentHead>
-        Ingresso escolhido
-      </PaimentHead>
-      <PaimentStatusContainer>
-        {
-          type? 
-            type.isRemote ?
-              <h2>
-                Online
-                <h3>R$ {type.price}</h3>
-              </h2>
-              : 
-              <h2>
-                {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel' }
-                <h3>R$ {type.price}</h3>
-              </h2> 
-            :
-            ''
-        }
-      </PaimentStatusContainer>
-    </>
   );
 }
 
@@ -184,7 +190,7 @@ const PaymentOption = styled.div`
   }
 `;
 
-const PaimentStatusContainer = styled(PaymentOption)`
+const PaymentStatusContainer = styled(PaymentOption)`
   width: 290px;
   height: 108px;
   background: #FFEED2 ;
@@ -201,7 +207,7 @@ const PaimentStatusContainer = styled(PaymentOption)`
     color: #898989;
   }
 `;
-const PaimentHead = styled.div`
+const PaymentHead = styled.div`
   margin: 15px;
   width: 290px;
   font-weight: 400;
