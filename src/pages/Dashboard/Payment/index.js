@@ -38,7 +38,7 @@ export default function Payment() {
           )}
         </>
       ) : (
-        '' // <PaimentStatus ticket={ticket} ticketTypes={ticketTypes} />
+        <PaimentStatus ticket={ticket} ticketTypes={ticketTypes} />
       )}
     </>
   );
@@ -166,36 +166,36 @@ function PaymentConfirmed() {
   );
 }
 
-// function PaimentStatus({ ticket, ticketTypes }) {
-//   const type = !ticketTypes
-//     ? ''
-//     : ticketTypes.find((value) => {
-//         if (ticket.ticketTypeId === value.id) return value;
-//       });
+function PaimentStatus({ ticket, ticketTypes }) {
+  const type = !ticketTypes
+    ? ''
+    : ticketTypes.find((value) => {
+      if (ticket.ticketTypeId === value.id) return value;
+    });
 
-//   return (
-//     <>
-//       <PaimentHead>Ingresso escolhido</PaimentHead>
-//       <PaimentStatusContainer>
-//         {type ? (
-//           type.isRemote ? (
-//             <h2>
-//               Online
-//               <h3>R$ {type.price}</h3>
-//             </h2>
-//           ) : (
-//             <h2>
-//               {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel'}
-//               <h3>R$ {type.price}</h3>
-//             </h2>
-//           )
-//         ) : (
-//           ''
-//         )}
-//       </PaimentStatusContainer>
-//     </>
-//   );
-// }
+  return (
+    <>
+      <PaimentHead>Ingresso escolhido</PaimentHead>
+      <PaimentStatusContainer>
+        {type ? (
+          type.isRemote ? (
+            <h2>
+              Online
+              <h3>R$ {type.price}</h3>
+            </h2>
+          ) : (
+            <h2>
+              {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel'}
+              <h3>R$ {type.price}</h3>
+            </h2>
+          )
+        ) : (
+          ''
+        )}
+      </PaimentStatusContainer>
+    </>
+  );
+}
 
 const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
