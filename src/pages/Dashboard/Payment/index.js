@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
 import useEnrollment from '../../../hooks/api/useEnrollment';
@@ -43,7 +43,7 @@ export default function Payment() {
             
           )}
         </> :
-        <PaymentStatus ticket={ticket} ticketTypes={ticketTypes}  />
+        <PaymentStatusName ticket={ticket} />
     );
   }
 
@@ -162,7 +162,7 @@ function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
   );
 }
 
-function PaymentStatus({ ticket }) {
+function PaymentStatusName({ ticket }) {
   const type = ticket.TicketType;
 
   function renderTicketOption() {
@@ -173,9 +173,9 @@ function PaymentStatus({ ticket }) {
 
   return(
     <>
-      <PaimentHead>
+      <PaymentHead>
         Ingresso escolhido
-      </PaimentHead>
+      </PaymentHead>
       <PaymentStatusContainer>
         {
           type?
@@ -198,7 +198,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaimentStatus ticket={ticket}  /> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  /> // TODO: Add Card data insertion display here
       }
     </>
   );
@@ -219,14 +219,14 @@ function PaymentConfirmed() {
   );
 }
 
-function PaimentStatus({ ticket }) {
+function PaymentStatus({ ticket }) {
   const [cardComplete, setCardComplete] = useState('');
   const { paid } = usePaidTicket();
   const { ticketTypes } = useTicketTypes();
 
-  const type = !ticketTypes? '' : ticketTypes.find((value) => {
-    if(ticket.ticketTypeId === value.id) return value;
-  });
+  const type = !ticketTypes? '' : ticketTypes.find((value) => 
+    (ticket.ticketTypeId === value.id)
+  );
 
   async function envCard() { 
     delete cardComplete.acceptedCards;
@@ -252,9 +252,9 @@ function PaimentStatus({ ticket }) {
   
   return(
     <>
-      <PaimentHead>
+      <PaymentHead>
         Pagamento
-      </PaimentHead>
+      </PaymentHead>
       <CredCard setCardComplete={setCardComplete} envCard={envCard} />   
     </>
   );
@@ -346,7 +346,6 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
   width: 290px;
   height: 108px;
   background: #ffeed2;
-  font-weight: 400;
   font-size: 16px;
   line-height: 19px;  
   h3 {
@@ -357,10 +356,9 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
   }
 `;
 
-const PaimentHead = styled.div`
+const PaymentHead = styled.div`
   margin: 15px;
   width: 290px;
-  font-weight: 400;
   font-size: 20px;
   line-height: 23px;
   color: #8e8e8e;
