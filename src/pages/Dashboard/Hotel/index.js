@@ -1,15 +1,11 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
-import useHotel from '../../../hooks/api/useHotel';
 import Hotels from './Hotels.js';
 
 export default function Hotel() {
   const { ticket } = useTicket();
 
-  const { hotels } = useHotel();
-
-  console.log(hotels);
   return(
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>        
@@ -20,7 +16,7 @@ export default function Hotel() {
              Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem
             </h2>
             :
-            ticket?.ticketTypeId !== 2 ?
+            !ticket.TicketType.includesHotel ?
               <h2>
             Sua modalidade de ingresso não inclui hospedagem 
             Prossiga para a escolha de atividades
