@@ -1,10 +1,13 @@
 import { Typography } from '@material-ui/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
-import useEnrollment from '../../../hooks/api/useEnrollment.js';
-import useTicket from '../../../hooks/api/useTicket.js';
+import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
+import useEnrollment from '../../../hooks/api/useEnrollment';
+import useTicket from '../../../hooks/api/useTicket';
 import { FaCheckCircle } from 'react-icons/fa';
+import CredCard from '../../../hooks/useCredCard';
+import usePaidTicket from '../../../hooks/api/usePaidTicket';
+
 import Button from '../../../components/Form/Button.js';
 import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 import useCreateTicket from '../../../hooks/api/useCreateTicket.js';
@@ -216,6 +219,63 @@ function PaymentConfirmed() {
   );
 }
 
+function PaimentStatus({ ticket }) {
+  const [cardComplete, setCardComplete] = useState('');
+  const { paid } = usePaidTicket();
+  const { ticketTypes } = useTicketTypes();
+
+  const type = !ticketTypes? '' : ticketTypes.find((value) => {
+    if(ticket.ticketTypeId === value.id) return value;
+  });
+
+  async function envCard() { 
+    delete cardComplete.acceptedCards;
+    
+    delete cardComplete.focused;
+    
+    const obj = {
+      ticketId: type.id,
+      cardData: {
+        issuer: cardComplete.issur,
+        expirationDate: cardComplete.expiry,
+        ...cardComplete
+      }
+    };
+    delete obj.cardData.expiry;
+
+    await paid(obj);
+  };
+  
+  return(
+    <>
+      <PaimentHead>
+        Ingresso escolhido
+      </PaimentHead>
+      <PaimentStatusContainer>
+        {
+          type? 
+            type.isRemote ?
+              <h2>
+                Online
+                <h3>R$ {type.price}</h3>
+              </h2>
+              : 
+              <h2>
+                {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel' }
+                <h3>R$ {type.price}</h3>
+              </h2> 
+            :
+            ''
+        }
+      </PaimentStatusContainer>
+      <PaimentHead>
+        Pagamento
+      </PaimentHead>
+      <CredCard setCardComplete={setCardComplete} envCard={envCard} />   
+    </>
+  );
+}
+
 const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
@@ -312,7 +372,8 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
     color: #898989;
   }
 `;
-const PaymentHead = styled.div`
+
+const PaimentHead = styled.div`
   margin: 15px;
   width: 290px;
   font-weight: 400;
