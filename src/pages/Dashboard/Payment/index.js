@@ -31,7 +31,13 @@ export default function Payment() {
           {selectedType === 'Online' ? (
             <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
           ) : (
-            <HotelsOptions ticketTypes={ticketTypes} selectedType={selectedType} setTicketTypeId={setTicketTypeId} />
+            <HotelsOptions 
+              ticketTypes={ticketTypes} 
+              selectedType={selectedType}
+              ticketTypeId={ticketTypeId}   
+              setTicketTypeId={setTicketTypeId} 
+            />
+            
           )}
         </> :
         <PaymentStatus ticket={ticket} ticketTypes={ticketTypes}  />
@@ -71,7 +77,7 @@ function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeI
   );
 }
 
-function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId }) {
+function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
   const [hotelType, setHotelType] = useState('');
   if (selectedType === '') return '';
 
@@ -92,6 +98,11 @@ function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId }) {
             />
           ))}
       </div>
+      {hotelType ? (
+        <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+      ) : (
+        ''            
+      )}
     </HotelOptionsContainer>
   );
 }
@@ -126,7 +137,8 @@ function IncludesHotelBox({ type, name, setTicketTypeId, setHotelType, hotelType
 
 function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
   const { postCreatedTicket } = useCreateTicket();
-  const formattedPrice = (ticketTypes[2].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const indexOfTicketType = ticketTypeId - 1;
+  const formattedPrice = (ticketTypes[indexOfTicketType].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   async function reserveTicket() {
     try {
