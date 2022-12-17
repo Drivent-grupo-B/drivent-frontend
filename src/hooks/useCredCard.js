@@ -10,12 +10,12 @@ export default function CredCard({ setCardComplete, envCard }) {
     focused: '',
     name: '',
     number: '',
-    acceptedCards: ['visa', 'master'],
     issuer: ''
   });
 
   function cardComplet() {
     if(card.cvv === '' || card.expiry === '' || card.focused === '' || card.name === '' || card.number === '')return;
+    if(isNaN(Number(card.number) && Number(card.expiry) && Number(card.cvv)) || card.issuer === 'UNKNOWN' ) return;
     setCardComplete(card);
     envCard();
   }
@@ -29,7 +29,7 @@ export default function CredCard({ setCardComplete, envCard }) {
           focused={ card.focused }
           name={ card.name }
           number={ card.number }
-          acceptedCards= { card.acceptedCards }
+          acceptedCards= { ['visa', 'mastercard'] }
           callback={ (e) => setCard({ ...card, issuer: e.issuer.toUpperCase() }) }
 
         />

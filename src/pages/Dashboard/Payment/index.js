@@ -173,9 +173,9 @@ function PaymentStatus({ ticket }) {
 
   return(
     <>
-      <PaymentHead>
+      <PaimentHead>
         Ingresso escolhido
-      </PaymentHead>
+      </PaimentHead>
       <PaymentStatusContainer>
         {
           type?
@@ -198,7 +198,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ? <PaymentConfirmed /> : <></> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaimentStatus ticket={ticket}  /> // TODO: Add Card data insertion display here
       }
     </>
   );
@@ -242,32 +242,16 @@ function PaimentStatus({ ticket }) {
       }
     };
     delete obj.cardData.expiry;
-
-    await paid(obj);
+    try {
+      await paid(obj);
+      toast('Parabéns seu ticket foi pago com sucesso'); 
+    } catch (error) {
+      envCard();
+    }
   };
   
   return(
     <>
-      <PaimentHead>
-        Ingresso escolhido
-      </PaimentHead>
-      <PaimentStatusContainer>
-        {
-          type? 
-            type.isRemote ?
-              <h2>
-                Online
-                <h3>R$ {type.price}</h3>
-              </h2>
-              : 
-              <h2>
-                {type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel' }
-                <h3>R$ {type.price}</h3>
-              </h2> 
-            :
-            ''
-        }
-      </PaimentStatusContainer>
       <PaimentHead>
         Pagamento
       </PaimentHead>
