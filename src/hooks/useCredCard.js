@@ -111,8 +111,7 @@ const Allcards = styled.div`
         border: 2px solid #8E8E8E;
         height: 30px ;
         width:100% ;
-        color: #8E8E8E;
-        font-weight: 400;
+        color: #8E8E8E;   
         font-size: 15px;
         line-height: 23px;
         :focus{
@@ -131,7 +130,6 @@ const Allcards = styled.div`
 const Text = styled.div`
   margin: 15px;
   width: 290px;
-  font-weight: 400;
   font-size: 20px;
   line-height: 23px;
   color: #8E8E8E;

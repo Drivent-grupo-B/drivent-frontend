@@ -5,9 +5,9 @@ export default function Hotels() {
   return(
     <>
       {hotels ? 
-        hotels.map((hotel) => {
-          <HotelCard hotel={hotel}/>;
-        })
+        hotels.map((hotel) => (
+          <HotelCard hotel={hotel} key={hotel.id}/>
+        ))
         :
         'Não tem hotéis cadastrados!'
       }
