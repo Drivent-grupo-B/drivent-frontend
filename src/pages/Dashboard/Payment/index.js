@@ -5,55 +5,192 @@ import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import useTicket from '../../../hooks/api/useTicket';
 import { FaCheckCircle } from 'react-icons/fa';
-import useTicketTypes from '../../../hooks/api/useTicketTypes';
 import CredCard from '../../../hooks/useCredCard';
 import usePaidTicket from '../../../hooks/api/usePaidTicket';
 
+import Button from '../../../components/Form/Button.js';
+import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
+import useCreateTicket from '../../../hooks/api/useCreateTicket.js';
+import { toast } from 'react-toastify';
+
 export default function Payment() {
   const { enrollment } = useEnrollment();
+  const { ticketTypes } = useTicketTypes();
+  const [selectedType, setSelectedType] = useState('');
+  const [ticketTypeId, setTicketTypeId] = useState(0);
 
   const { ticket } = useTicket();
+
+  function renderEventOrPayment() {
+    return (
+      !ticket ?
+        <>
+          <EventTypes
+            ticketTypes={ticketTypes}
+            selectedType={selectedType}
+            setSelectedType={setSelectedType}
+            setTicketTypeId={setTicketTypeId}
+          />
+          {selectedType === 'Online' ? (
+            <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+          ) : (
+            <HotelsOptions 
+              ticketTypes={ticketTypes} 
+              selectedType={selectedType}
+              ticketTypeId={ticketTypeId}   
+              setTicketTypeId={setTicketTypeId} 
+            />
+            
+          )}
+        </> :
+        <PaymentStatus ticket={ticket} ticketTypes={ticketTypes}  />
+    );
+  }
 
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
-      {!enrollment ? (
-        <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage>
-      ) : !ticket? (
-        <>
-          <EventTypes />
-        </>
-      ) : (<PaimentStatus ticket={ ticket }/>)}
+      {
+        !enrollment || !ticketTypes ? 
+          <ForbiddenPage>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</ForbiddenPage> : 
+          renderEventOrPayment()
+      }
     </>
   );
 }
 
-function EventTypes() {
-  const [ticketType, setTicketType] = useState({});
-    
-  function handleOption(type) {
-    setTicketType({
-      name: type,
-      price: type === 'Online' ? 10000 : 25000,
-      isRemote: type === 'Online' ? true : false,
-      includesHotel: false,
-    });
+function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeId }) {
+  return (
+    <TicketTypeContainer type={selectedType}>
+      <h2>Primeiro, escolha sua modalidade de ingresso</h2>
+      <div>
+        {ticketTypes
+          .filter((type) => !type.includesHotel)
+          .map((type) => (
+            <OptionBox
+              type={type}
+              key={type.id}
+              setSelectedType={setSelectedType}
+              selectedType={selectedType}
+              setTicketTypeId={setTicketTypeId}
+            />
+          ))}
+      </div>
+    </TicketTypeContainer>
+  );
+}
+
+function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
+  const [hotelType, setHotelType] = useState('');
+  if (selectedType === '') return '';
+
+  return (
+    <HotelOptionsContainer>
+      <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
+      <div>
+        {ticketTypes
+          .filter((type) => type.name === 'Presencial')
+          .map((type) => (
+            <IncludesHotelBox
+              type={type}
+              name={type.includesHotel ? 'Com Hotel' : 'Sem Hotel'}
+              key={type.id}
+              setTicketTypeId={setTicketTypeId}
+              hotelType={hotelType}
+              setHotelType={setHotelType}
+            />
+          ))}
+      </div>
+      {hotelType ? (
+        <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+      ) : (
+        ''            
+      )}
+    </HotelOptionsContainer>
+  );
+}
+
+function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
+  function handleOption() {
+    setSelectedType(type.name);
+    setTicketTypeId(type.id);
   }
 
   return (
-    <EventTypeContainer type={ticketType}>
-      <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-      <div>
-        <PaymentOption onClick={() => handleOption('Presencial')}>
-          <h3>Presencial</h3>
-          <span>R$ 250</span>
-        </PaymentOption>
-        <PaymentOption onClick={() => handleOption('Online')}>
-          <h3>Online</h3>
-          <span>R$ 100</span>
-        </PaymentOption>
-      </div>
-    </EventTypeContainer>
+    <OptionBoxStyle selectedType={selectedType} name={type.name} onClick={handleOption}>
+      <h3>{type.name}</h3>
+      <span>R$ {type.price / 100}</span>
+    </OptionBoxStyle>
+  );
+}
+
+function IncludesHotelBox({ type, name, setTicketTypeId, setHotelType, hotelType }) {
+  function handleHotelOption() {
+    setTicketTypeId(type.id);
+    setHotelType(name);
+  }
+
+  return (
+    <HotelBoxStyle hotelType={hotelType} name={name} onClick={handleHotelOption}>
+      <h3>{name}</h3>
+      <span>+ R$ {type.price / 100 - 250}</span>
+    </HotelBoxStyle>
+  );
+}
+
+function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
+  const { postCreatedTicket } = useCreateTicket();
+  const indexOfTicketType = ticketTypeId - 1;
+  const formattedPrice = (ticketTypes[indexOfTicketType].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  async function reserveTicket() {
+    try {
+      postCreatedTicket({ ticketTypeId });
+      toast('Ticket reservado com sucesso!');
+    } catch (error) {
+      toast('Não foi possível reservar seu ticket!');
+    }
+  }
+
+  return (
+    <Summary>
+      <h2>
+        Fechado! O total ficou em <strong>{formattedPrice}</strong>. Agora é só confirmar:
+      </h2>
+      <Button onClick={reserveTicket}>Reservar Ingresso</Button>
+    </Summary>
+  );
+}
+
+function PaymentStatus({ ticket }) {
+  const type = ticket.TicketType;
+
+  function renderTicketOption() {
+    if (type.isRemote) return 'Online';
+
+    return type.includesHotel ? 'Presencial + Com Hotel' : 'Presencial sem Hotel';
+  }
+
+  return(
+    <>
+      <PaymentHead>
+        Ingresso escolhido
+      </PaymentHead>
+      <PaymentStatusContainer>
+        {
+          type?
+            <>
+              <h2>
+                { renderTicketOption() }
+              </h2>  
+              <h3>R$ {type.price / 100}</h3>
+            </>
+            :
+            ''
+        }
+      </PaymentStatusContainer>
+      <PaymentData ticket={ticket} />
+    </>
   );
 }
 
@@ -61,9 +198,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ?
-          <PaymentConfirmed /> :
-          <></> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <></> // TODO: Add Card data insertion display here
       }
     </>
   );
@@ -145,7 +280,7 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
 
-const EventTypeContainer = styled.section`
+const TicketTypeContainer = styled.section`
   h2 {
     font-size: 20px;
     color: #8e8e8e;
@@ -154,13 +289,11 @@ const EventTypeContainer = styled.section`
     display: flex;
     gap: 24px;
     margin-top: 17px;
-    > div:nth-of-type(1) {
-      background-color: ${(props) => (props.type.isRemote ? '#ffffff' : '#FFEED2')};
-    }
-    > div:nth-of-type(2) {
-      background-color: ${(props) => (props.type.isRemote ? '#FFEED2' : '#ffffff')};
-    }
   }
+`;
+
+const HotelOptionsContainer = styled(TicketTypeContainer)`
+  margin-top: 44px;
 `;
 
 const PaymentContainer = styled.section`
@@ -179,14 +312,14 @@ const ConfirmationMessage = styled.div`
   line-height: 19px;
   & > *:first-child {
     font-size: 40px;
-    color: #36B853;
+    color: #36b853;
   }
   h3 {
     font-weight: 700;
   }
 `;
 
-const PaymentOption = styled.div`
+const OptionBoxStyle = styled.div`
   width: 145px;
   height: 145px;
   display: flex;
@@ -194,8 +327,9 @@ const PaymentOption = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid #cecece;
+  border: ${(props) => (props.name === props.selectedType ? 'none' : '1px solid #cecece')};
   border-radius: 20px;
+  background-color: ${(props) => (props.name === props.selectedType ? '#FFEED2' : '#ffffff')};
   h3 {
     font-size: 16px;
     color: #454545;
@@ -210,20 +344,31 @@ const PaymentOption = styled.div`
   }
 `;
 
-const PaimentStatusContainer = styled(PaymentOption)`
+const HotelBoxStyle = styled(OptionBoxStyle)`
+  border: ${(props) => (props.name === props.hotelType ? 'none' : '1px solid #cecece')};
+  background-color: ${(props) => (props.name === props.hotelType ? '#FFEED2' : '#ffffff')};
+`;
+
+const Summary = styled.footer`
+  margin-top: 44px;
+
+  h2 {
+    font-size: 20px;
+    color: #8e8e8e;
+    margin-bottom: 10px;
+  }
+`;
+const PaymentStatusContainer = styled(OptionBoxStyle)`
   width: 290px;
   height: 108px;
-  background: #FFEED2 ;
+  background: #ffeed2;
   font-weight: 400;
   font-size: 16px;
-  line-height: 19px;
-  section{
-
-  }
-  h3{
-    margin-top: 15px ;
-    width: 100% ;
-    text-align: center ;
+  line-height: 19px;  
+  h3 {
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
     color: #898989;
   }
 `;
@@ -234,5 +379,5 @@ const PaimentHead = styled.div`
   font-weight: 400;
   font-size: 20px;
   line-height: 23px;
-  color: #8E8E8E;
+  color: #8e8e8e;
 `;
