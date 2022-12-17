@@ -1,11 +1,13 @@
 import { Typography } from '@material-ui/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage.js';
-import useEnrollment from '../../../hooks/api/useEnrollment.js';
-import useTicket from '../../../hooks/api/useTicket.js';
+import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
+import useEnrollment from '../../../hooks/api/useEnrollment';
+import useTicket from '../../../hooks/api/useTicket';
 import { FaCheckCircle } from 'react-icons/fa';
-import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
+import useTicketTypes from '../../../hooks/api/useTicketTypes';
+import CredCard from '../../../hooks/useCredCard';
+import usePaidTicket from '../../../hooks/api/usePaidTicket';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -83,12 +85,32 @@ function PaymentConfirmed() {
 }
 
 function PaimentStatus({ ticket }) {
+  const [cardComplete, setCardComplete] = useState('');
+  const { paid } = usePaidTicket();
   const { ticketTypes } = useTicketTypes();
 
   const type = !ticketTypes? '' : ticketTypes.find((value) => {
     if(ticket.ticketTypeId === value.id) return value;
   });
 
+  async function envCard() { 
+    delete cardComplete.acceptedCards;
+    
+    delete cardComplete.focused;
+    
+    const obj = {
+      ticketId: type.id,
+      cardData: {
+        issuer: cardComplete.issur,
+        expirationDate: cardComplete.expiry,
+        ...cardComplete
+      }
+    };
+    delete obj.cardData.expiry;
+
+    await paid(obj);
+  };
+  
   return(
     <>
       <PaimentHead>
@@ -111,6 +133,10 @@ function PaimentStatus({ ticket }) {
             ''
         }
       </PaimentStatusContainer>
+      <PaimentHead>
+        Pagamento
+      </PaimentHead>
+      <CredCard setCardComplete={setCardComplete} envCard={envCard} />   
     </>
   );
 }
@@ -201,6 +227,7 @@ const PaimentStatusContainer = styled(PaymentOption)`
     color: #898989;
   }
 `;
+
 const PaimentHead = styled.div`
   margin: 15px;
   width: 290px;
