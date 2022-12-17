@@ -1,10 +1,14 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
+import useHotel from '../../../hooks/api/useHotel';
 
 export default function Hotel() {
   const { ticket } = useTicket();
 
+  const { hotels } = useHotel();
+
+  console.log(hotels);
   return(
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>        
