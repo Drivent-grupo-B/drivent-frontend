@@ -176,10 +176,12 @@ function PaymentStatus({ ticket }) {
       <PaymentStatusContainer>
         {
           type?
-            <h2>
-              { renderTicketOption() }
-              <h3>R$ {type.price}</h3>
-            </h2>
+            <>
+              <h2>
+                { renderTicketOption() }
+              </h2>  
+              <h3>R$ {type.price / 100}</h3>
+            </>
             :
             ''
         }
@@ -302,9 +304,7 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
   background: #ffeed2;
   font-weight: 400;
   font-size: 16px;
-  line-height: 19px;
-  section {
-  }
+  line-height: 19px;  
   h3 {
     margin-top: 15px;
     width: 100%;
