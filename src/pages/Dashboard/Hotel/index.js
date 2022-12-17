@@ -2,6 +2,7 @@ import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
 import useHotel from '../../../hooks/api/useHotel';
+import Hotels from './Hotels.js';
 
 export default function Hotel() {
   const { ticket } = useTicket();
@@ -14,7 +15,7 @@ export default function Hotel() {
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>        
       <HotelContainer>
         {
-          !ticket || ticket?.status !== 'PAID' ?
+          !ticket || ticket?.status === 'RESERVED' ?
             <h2>
              Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem
             </h2>
@@ -25,7 +26,7 @@ export default function Hotel() {
             Prossiga para a escolha de atividades
               </h2>
               :
-              ''
+              <Hotels />
         }
       </HotelContainer>     
     </>
@@ -44,7 +45,6 @@ const HotelContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 400;
   font-size: 20px;
   line-height: 23px;
   text-align: center;
