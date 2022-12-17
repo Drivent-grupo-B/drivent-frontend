@@ -31,7 +31,13 @@ export default function Payment() {
           {selectedType === 'Online' ? (
             <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
           ) : (
-            <HotelsOptions ticketTypes={ticketTypes} selectedType={selectedType} setTicketTypeId={setTicketTypeId} />
+            <HotelsOptions 
+              ticketTypes={ticketTypes} 
+              selectedType={selectedType}
+              ticketTypeId={ticketTypeId}   
+              setTicketTypeId={setTicketTypeId} 
+            />
+            
           )}
         </> :
         <PaymentStatus ticket={ticket} ticketTypes={ticketTypes}  />
@@ -71,7 +77,7 @@ function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeI
   );
 }
 
-function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId }) {
+function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
   const [hotelType, setHotelType] = useState('');
   if (selectedType === '') return '';
 
@@ -92,6 +98,11 @@ function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId }) {
             />
           ))}
       </div>
+      {hotelType ? (
+        <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+      ) : (
+        ''            
+      )}
     </HotelOptionsContainer>
   );
 }
@@ -126,7 +137,8 @@ function IncludesHotelBox({ type, name, setTicketTypeId, setHotelType, hotelType
 
 function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
   const { postCreatedTicket } = useCreateTicket();
-  const formattedPrice = (ticketTypes[2].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const indexOfTicketType = ticketTypeId - 1;
+  const formattedPrice = (ticketTypes[indexOfTicketType].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   async function reserveTicket() {
     try {
@@ -164,10 +176,12 @@ function PaymentStatus({ ticket }) {
       <PaymentStatusContainer>
         {
           type?
-            <h2>
-              { renderTicketOption() }
-              <h3>R$ {type.price}</h3>
-            </h2>
+            <>
+              <h2>
+                { renderTicketOption() }
+              </h2>  
+              <h3>R$ {type.price / 100}</h3>
+            </>
             :
             ''
         }
@@ -290,9 +304,7 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
   background: #ffeed2;
   font-weight: 400;
   font-size: 16px;
-  line-height: 19px;
-  section {
-  }
+  line-height: 19px;  
   h3 {
     margin-top: 15px;
     width: 100%;
