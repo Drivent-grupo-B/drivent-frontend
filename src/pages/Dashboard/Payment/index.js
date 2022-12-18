@@ -197,7 +197,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  /> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  />
       }
     </>
   );
