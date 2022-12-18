@@ -16,7 +16,7 @@ export default function Hotel() {
              Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem
             </h2>
             :
-            ticket?.ticketTypeId !== 2 ?
+            (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) ?
               <h2>
             Sua modalidade de ingresso não inclui hospedagem 
             Prossiga para a escolha de atividades
