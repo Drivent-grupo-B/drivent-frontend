@@ -1,17 +1,18 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import RoomCard from '../../../components/Hotel/RoomCard';
-import useHotelRooms from '../../../hooks/api/useHotelRooms';
+import HotelContext from '../../../contexts/HotelContext';
 
-export default function Hotels({ selectedHotelId }) {
-  if (!selectedHotelId) return '';
-  const { rooms } = useHotelRooms(selectedHotelId);
+export default function Rooms() {
+  const { selectedHotel } = useContext(HotelContext);
+  if (!selectedHotel.id) return '';
 
   return (
     <RoomsContainer>
-      <h2>Ótima pedida! Agora escolha seu quarto:</h2>
+      <h4>Ótima pedida! Agora escolha seu quarto:</h4>
       <div>
-        {rooms.map((room) => (
-          <RoomCard room={room} key={room.id} />
+        {selectedHotel.Rooms.map((room) => (
+          <RoomCard key={room.id} room={room}/>
         ))}
       </div>
     </RoomsContainer>
@@ -21,17 +22,19 @@ export default function Hotels({ selectedHotelId }) {
 const RoomsContainer = styled.section`
   display: flex;
   flex-direction: column;
+  margin-top: 52px;
+  margin-bottom: 200px;
 
-  h2{
+  h4 {
     font-size: 20px;
     color: #8e8e8e;
     margin-bottom: 33px;
   }
 
-  >div{
+  > div {
     display: flex;
     flex-wrap: wrap;
-    row-gap: 17px;
-    column-gap: 8px;
+    row-gap: 8px;
+    column-gap: 17px;
   }
 `;

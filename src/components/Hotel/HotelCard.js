@@ -1,17 +1,20 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
+import HotelContext from '../../contexts/HotelContext';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function HotelCard({ hotel }) {
   const { rooms } = useHotelRooms(hotel.id);
+  const { setSelectedHotel } = useContext(HotelContext);
   let vacancies = 0;
   const roomTypesAvailable = {
     1: 0,
     2: 0,
     3: 0,
   };
-  
+
   if (rooms) {
-    rooms.Rooms.forEach(room => {
+    rooms.Rooms.forEach((room) => {
       vacancies += room.capacity;
       roomTypesAvailable[room.capacity] += 1;
     });
@@ -33,22 +36,22 @@ export default function HotelCard({ hotel }) {
     if (roomTypesAvailable[2] && roomTypesAvailable[3]) {
       return 'Double e Triple';
     }
-    
+
     if (roomTypesAvailable[1]) return 'Single';
-    
+
     if (roomTypesAvailable[2]) return 'Double';
 
     return 'Triple';
   }
 
   return (
-    <HotelContainer>
-      <img src={hotel.image} alt={hotel.image}/>
+    <HotelContainer onClick={() => setSelectedHotel(rooms)}>
+      <img src={hotel.image} alt={hotel.image} />
       <h2>{hotel.name}</h2>
       <h3>Tipos de acomodação:</h3>
-      <p>{ renderRoomTypes() }</p>
+      <p>{renderRoomTypes()}</p>
       <h3>Vagas disponíveis:</h3>
-      <p>{ vacancies }</p>
+      <p>{vacancies}</p>
     </HotelContainer>
   );
 }
@@ -57,25 +60,25 @@ const HotelContainer = styled.div`
   width: 196px;
   height: 264px;
   border-radius: 10px;
-  background-color: #EBEBEB;
+  background-color: #ebebeb;
   font-size: 12px;
   color: #343434;
   padding: 16px 14px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: flex-start;
   margin-right: 19px;
-  img{
+  img {
     width: 168px;
     height: 109px;
     border-radius: 5px;
     margin-bottom: 10px;
   }
-  h2{
+  h2 {
     font-size: 20px;
     margin-bottom: 10px;
   }
-  h3{
+  h3 {
     font-weight: 700;
   }
 `;
