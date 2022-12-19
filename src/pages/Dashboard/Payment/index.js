@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 export default function Payment() {
   const { enrollment } = useEnrollment();
   const { ticketTypes } = useTicketTypes();
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState({});
   const [ticketTypeId, setTicketTypeId] = useState(0);
 
   const { ticket } = useTicket();
@@ -31,8 +31,8 @@ export default function Payment() {
             setSelectedType={setSelectedType}
             setTicketTypeId={setTicketTypeId}
           />
-          {selectedType === 'Online' ? (
-            <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+          {selectedType.name === 'Online' ? (
+            <TicketSummaryMessage selectedOption={selectedType} ticketTypeId={ticketTypeId} />
           ) : (
             <HotelsOptions 
               ticketTypes={ticketTypes} 
@@ -61,7 +61,7 @@ export default function Payment() {
 
 function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeId }) {
   return (
-    <TicketTypeContainer type={selectedType}>
+    <TicketTypeContainer>
       <h2>Primeiro, escolha sua modalidade de ingresso</h2>
       <div>
         {ticketTypes
@@ -81,8 +81,8 @@ function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeI
 }
 
 function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
-  const [hotelType, setHotelType] = useState('');
-  if (selectedType === '') return '';
+  const [hotelType, setHotelType] = useState({});
+  if (Object.keys(selectedType).length === 0) return '';
 
   return (
     <HotelOptionsContainer>
@@ -101,8 +101,8 @@ function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeI
             />
           ))}
       </div>
-      {hotelType ? (
-        <TicketSummaryMessage ticketTypes={ticketTypes} ticketTypeId={ticketTypeId} />
+      {hotelType.name ? (
+        <TicketSummaryMessage selectedOption={hotelType} ticketTypeId={ticketTypeId} />
       ) : (
         ''            
       )}
@@ -112,12 +112,12 @@ function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeI
 
 function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
   function handleOption() {
-    setSelectedType(type.name);
+    setSelectedType({ name: type.name, price: type.price });
     setTicketTypeId(type.id);
   }
 
   return (
-    <OptionBoxStyle selectedType={selectedType} name={type.name} onClick={handleOption}>
+    <OptionBoxStyle selectedType={selectedType.name ? selectedType.name : ''} name={type.name} onClick={handleOption}>
       <h3>{type.name}</h3>
       <span>R$ {type.price / 100}</span>
     </OptionBoxStyle>
@@ -127,21 +127,20 @@ function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
 function IncludesHotelBox({ type, name, setTicketTypeId, setHotelType, hotelType }) {
   function handleHotelOption() {
     setTicketTypeId(type.id);
-    setHotelType(name);
+    setHotelType({ name, price: type.price });
   }
 
   return (
-    <HotelBoxStyle hotelType={hotelType} name={name} onClick={handleHotelOption}>
+    <HotelBoxStyle hotelType={hotelType.name ? hotelType.name : ''} name={name} onClick={handleHotelOption}>
       <h3>{name}</h3>
       <span>+ R$ {type.price / 100 - 250}</span>
     </HotelBoxStyle>
   );
 }
 
-function TicketSummaryMessage({ ticketTypes, ticketTypeId }) {
+function TicketSummaryMessage({ selectedOption, ticketTypeId }) {
   const { postCreatedTicket } = useCreateTicket();
-  const indexOfTicketType = ticketTypeId - 1;
-  const formattedPrice = (ticketTypes[indexOfTicketType].price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const formattedPrice = (selectedOption.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   async function reserveTicket() {
     try {
@@ -198,7 +197,7 @@ function PaymentData({ ticket }) {
   return (
     <>
       {
-        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  /> // TODO: Add Card data insertion display here
+        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  />
       }
     </>
   );
@@ -314,6 +313,7 @@ const OptionBoxStyle = styled.div`
   border: ${(props) => (props.name === props.selectedType ? 'none' : '1px solid #cecece')};
   border-radius: 20px;
   background-color: ${(props) => (props.name === props.selectedType ? '#FFEED2' : '#ffffff')};
+  transition: none;
   h3 {
     font-size: 16px;
     color: #454545;
