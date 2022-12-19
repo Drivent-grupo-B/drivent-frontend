@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import RoomCard from '../../../components/Hotel/RoomCard';
 import useHotelRooms from '../../../hooks/api/useHotelRooms';
 
 export default function Hotels({ selectedHotelId }) {
@@ -10,7 +11,7 @@ export default function Hotels({ selectedHotelId }) {
       <h2>Ótima pedida! Agora escolha seu quarto:</h2>
       <div>
         {rooms.map((room) => (
-          <div room={room} key={room.id} />
+          <RoomCard room={room} key={room.id} />
         ))}
       </div>
     </RoomsContainer>

@@ -221,11 +221,6 @@ function PaymentConfirmed() {
 function PaymentStatus({ ticket }) {
   const [cardComplete, setCardComplete] = useState('');
   const { paid } = usePaidTicket();
-  const { ticketTypes } = useTicketTypes();
-
-  const type = !ticketTypes? '' : ticketTypes.find((value) => 
-    (ticket.ticketTypeId === value.id)
-  );
 
   async function envCard() { 
     delete cardComplete.acceptedCards;
@@ -233,7 +228,7 @@ function PaymentStatus({ ticket }) {
     delete cardComplete.focused;
     
     const obj = {
-      ticketId: type.id,
+      ticketId: ticket.id,
       cardData: {
         issuer: cardComplete.issur,
         expirationDate: cardComplete.expiry,
@@ -245,7 +240,7 @@ function PaymentStatus({ ticket }) {
       await paid(obj);
       toast('Parabéns seu ticket foi pago com sucesso'); 
     } catch (error) {
-      envCard();
+      toast('Ocorreu um erro com o seu pagamento!'); 
     }
   };
   
