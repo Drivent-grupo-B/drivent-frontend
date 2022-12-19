@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function HotelCard({ hotel }) {
+  const [capacity, setCapacity] = useState(0);
+
+  useEffect(() => {
+    let cont = 0;
+    hotel.Rooms.map((room) => {
+      cont += room.capacity - room._count.Booking;
+    } );
+    setCapacity(cont);
+  }, []);
   const { rooms } = useHotelRooms(hotel.id);
   let vacancies = 0;
   const roomTypesAvailable = {
@@ -48,7 +58,7 @@ export default function HotelCard({ hotel }) {
       <h3>Tipos de acomodação:</h3>
       <p>{ renderRoomTypes() }</p>
       <h3>Vagas disponíveis:</h3>
-      <p>{ vacancies }</p>
+      <p>{ capacity }</p>
     </HotelContainer>
   );
 }
@@ -72,6 +82,7 @@ const HotelContainer = styled.div`
     margin-bottom: 10px;
   }
   h2{
+    margin: 0px 0px 10px 0px ;
     font-size: 20px;
     margin-bottom: 10px;
   }
