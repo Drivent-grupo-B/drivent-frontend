@@ -1,52 +1,46 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function HotelCard({ hotel }) {
   const [capacity, setCapacity] = useState(0);
+  const [roomTypes, setRoomTypes] = useState('');
 
   useEffect(() => {
     let cont = 0;
-    hotel.Rooms.map((room) => {
+    const roomTypesAvailable = {
+      1: 0,
+      2: 0,
+      3: 0,
+    };
+    hotel.Rooms.forEach((room) => {
       cont += room.capacity - room._count.Booking;
-    } );
-    setCapacity(cont);
-  }, []);
-  const { rooms } = useHotelRooms(hotel.id);
-  let vacancies = 0;
-  const roomTypesAvailable = {
-    1: 0,
-    2: 0,
-    3: 0,
-  };
-  
-  if (rooms) {
-    rooms.Rooms.forEach(room => {
-      vacancies += room.capacity;
-      roomTypesAvailable[room.capacity] += 1;
+      if (room.capacity - room._count.Booking > 0) roomTypesAvailable[room.capacity] += 1;
     });
-  }
+    setCapacity(cont);
+    setRoomTypes(roomTypesAvailable);
+  }, []);
 
   function renderRoomTypes() {
-    if (roomTypesAvailable[1] && roomTypesAvailable[2] && roomTypesAvailable[3]) {
+    if (!roomTypes) return '';
+    if (roomTypes[1] && roomTypes[2] && roomTypes[3]) {
       return 'Single, Double e Triple';
     }
 
-    if (roomTypesAvailable[1] && roomTypesAvailable[2]) {
+    if (roomTypes[1] && roomTypes[2]) {
       return 'Single e Double';
     }
 
-    if (roomTypesAvailable[1] && roomTypesAvailable[3]) {
+    if (roomTypes[1] && roomTypes[3]) {
       return 'Single e Triple';
     }
 
-    if (roomTypesAvailable[2] && roomTypesAvailable[3]) {
+    if (roomTypes[2] && roomTypes[3]) {
       return 'Double e Triple';
     }
     
-    if (roomTypesAvailable[1]) return 'Single';
+    if (roomTypes[1]) return 'Single';
     
-    if (roomTypesAvailable[2]) return 'Double';
+    if (roomTypes[2]) return 'Double';
 
     return 'Triple';
   }

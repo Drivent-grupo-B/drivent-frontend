@@ -3,7 +3,7 @@ import useHotel from '../../../hooks/api/useHotel.js';
 export default function Hotels() {
   const { hotels } = useHotel();
 
-return(
+  return(
     <>
       {hotels ? 
         hotels.map((hotel) => (
