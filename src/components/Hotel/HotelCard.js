@@ -81,7 +81,7 @@ export default function HotelCard({ hotel }) {
   }
 
   function defineRoomOcupation(ocupants) {
-    if (ocupants === 1) return 'Você';
+    if (ocupants === 1) return 'Somente você';
 
     return `Você e mais ${ocupants} pessoas`;
   }
