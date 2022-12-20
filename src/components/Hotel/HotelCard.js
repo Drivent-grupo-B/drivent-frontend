@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import useBooking from '../../hooks/api/useBooking';
 
 export default function HotelCard({ hotel }) {
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
+  const roomTypeCorrespondence = {
+    1: 'Single',
+    2: 'Double',
+    3: 'Triple',
+  };
 
   useEffect(() => {
     let cont = 0;
@@ -48,11 +54,19 @@ export default function HotelCard({ hotel }) {
     let header = 'Tipos de acomodação:';
     let renderRoom = renderRoomTypes();
     let secondHeader = 'Vagas disponíveis:';
-    const cont = capacity;
+    let cont = capacity;
+    const { booking } = useBooking();
 
-    if(reserved) {
+    if(reserved && booking) {      
+      const roomName = booking.Room.name;
+      const roomType = roomTypeCorrespondence[booking.Room.capacity];
+
+      const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
+      const roomOcupants = roomBookings - 1;
+      cont = defineRoomOcupation(roomOcupants);
+
       header = 'Quarto reservado';
-      renderRoom = `${ cont } (${ renderRoomTypes() })`;
+      renderRoom = `${ roomName } (${ roomType })`;
       secondHeader = 'Pessoas no seu quarto';
     }
 
@@ -64,6 +78,12 @@ export default function HotelCard({ hotel }) {
         <p>{ cont }</p>
       </>
     );
+  }
+
+  function defineRoomOcupation(ocupants) {
+    if (ocupants === 1) return 'Somente você';
+
+    return `Você e mais ${ocupants} pessoas`;
   }
 
   return (
