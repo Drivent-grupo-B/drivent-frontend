@@ -7,9 +7,9 @@ export default function HotelCard({ hotel }) {
 
   useEffect(() => {
     let cont = 0;
-    hotel.Rooms.map((room) => {
-      cont += room.capacity - room._count.Booking;
-    } );
+    hotel.Rooms.map((room) => 
+      cont += room.capacity - room._count.Booking
+    );
     setCapacity(cont);
   }, []);
   const { rooms } = useHotelRooms(hotel.id);
