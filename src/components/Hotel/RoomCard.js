@@ -3,7 +3,7 @@ import { IoPersonOutline, IoPerson } from 'react-icons/io5';
 import useRoomBooking from '../../hooks/api/useRoomBooking';
 import { useEffect, useState } from 'react';
 
-export default function RoomCard({ room }) {
+export default function RoomCard({ room, selectedRoom, setSelectedRoom }) {
   const { roomBooking } = useRoomBooking(room.id);
   const [isFull, setIsFull] = useState(false);
   const [iconsList, setIconsList] = useState([]);
@@ -16,8 +16,8 @@ export default function RoomCard({ room }) {
     if (totalCapacity === totalOfBookings) setIsFull(true);
 
     while (totalCapacity > 0) {
-      vacancies[totalCapacity] = true;
-      if (totalOfBookings > 0) vacancies[totalCapacity] = false;
+      vacancies[totalCapacity] = 'avaiable';
+      if (totalOfBookings > 0) vacancies[totalCapacity] = 'unavaiable';
       totalCapacity -= 1;
       totalOfBookings -= 1;
     }
@@ -25,10 +25,40 @@ export default function RoomCard({ room }) {
     setIconsList(Object.values(vacancies));
   }, [roomBooking, room]);
 
+  function selectRoom() {
+    if (isFull) return;
+
+    setSelectedRoom(room.id);
+    if (selectedRoom === room.id) return;
+
+    const icons = [...iconsList];
+    const hasSelected = icons.find((icon) => icon === 'selected');
+    if (hasSelected) return;
+    icons.shift();
+    icons.push('selected');
+    icons.sort((a, b) => {
+      if (a > b) return 1;
+      if (a < b) return -1;
+      return 0;
+    });
+
+    setIconsList([...icons]);
+  }
+
   return (
-    <CardStyle isFull={isFull}>
+    <CardStyle isFull={isFull} selectedRoom={selectedRoom} roomId={room.id} onClick={selectRoom}>
       <h5>{room.name}</h5>
-      <div>{iconsList.map((vacancy) => (vacancy ? <IoPersonOutline /> : <IoPerson />))}</div>
+      <div>
+        {iconsList.map((vacancy, index) => {
+          if (vacancy === 'selected' && selectedRoom === room.id) {
+            return <IoPerson key={index} color="#FF4791" />;
+          } else if (vacancy === 'unavaiable') {
+            return <IoPerson key={index} />;
+          } else {
+            return <IoPersonOutline key={index} />;
+          }
+        })}
+      </div>
     </CardStyle>
   );
 }
@@ -38,7 +68,15 @@ const CardStyle = styled.div`
   height: 45px;
   border-radius: 10px;
   border: 1px #cecece solid;
-  background-color: ${(props) => (props.isFull ? '#E9E9E9' : '#ffffff')};
+  background-color: ${(props) => {
+    if (props.isFull) {
+      return '#E9E9E9';
+    } else if (props.selectedRoom === props.roomId) {
+      return '#FFEED2';
+    } else {
+      return '#ffffff';
+    }
+  }};
   padding: 11px 16px;
   display: flex;
   align-items: center;

@@ -32,8 +32,8 @@ const StyledTypography = styled(Typography)`
 `;
 
 const HotelContainer = styled.div`
-  height: 80%;
   display: flex;
+  height: 80%;
   flex-direction: column;
   font-size: 20px;
   line-height: 23px;
