@@ -92,4 +92,9 @@ const CardStyle = styled.div`
     color: ${(props) => (props.isFull ? '#8C8C8C' : '#000000')};
     margin-top: 5px;
   }
+
+  &:hover{
+    filter: brightness(0.95);
+    cursor: pointer;
+  }
 `;
