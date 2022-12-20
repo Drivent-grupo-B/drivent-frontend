@@ -18,10 +18,10 @@ import TicketSummaryMessage from './TicketSummaryMessage';
 export default function Payment() {
   const { enrollment } = useEnrollment();
   const { ticketTypes } = useTicketTypes();
+  const { ticket } = useTicket(); 
+
   const [selectedType, setSelectedType] = useState({});
   const [ticketTypeId, setTicketTypeId] = useState(0);
-
-  const { ticket } = useTicket();
 
   function renderEventOrPayment() {
     return (
@@ -94,10 +94,12 @@ function PaymentStatusName({ ticket }) {
 }
 
 function PaymentData({ ticket }) {
+  const [ newTicket, setNewTicket ] = useState({ ...ticket });
+  
   return (
     <>
       {
-        ticket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ticket}  />
+        newTicket.status === 'PAID' ? <PaymentConfirmed /> : <PaymentStatus ticket={ { ...newTicket, setNewTicket } }  />
       }
     </>
   );
@@ -136,14 +138,17 @@ function PaymentStatus({ ticket }) {
       }
     };
     delete obj.cardData.expiry;
+
     try {
       await paid(obj);
+      
       toast('Parabéns seu ticket foi pago com sucesso'); 
+      ticket.setNewTicket({ ...ticket, status: 'PAID' });
     } catch (error) {
       toast('Ocorreu um erro com o seu pagamento!'); 
     }
   };
-  
+
   return(
     <>
       <PaymentHead>
