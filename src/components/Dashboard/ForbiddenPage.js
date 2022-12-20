@@ -17,7 +17,7 @@ const ForbiddenComponent = styled.section`
   justify-content: center;
 
   p {
-    width: 388px;
+    width: 500px;
     font-size: 20px;
     color: #8e8e8e;
   }

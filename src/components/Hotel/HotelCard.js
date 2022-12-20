@@ -13,8 +13,9 @@ export default function HotelCard({ hotel }) {
     } );
     setCapacity(cont);
   }, []);
+
   const { rooms } = useHotelRooms(hotel.id);
-  const { setSelectedHotel } = useContext(HotelContext);
+  const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   let vacancies = 0;
   const roomTypesAvailable = {
     1: 0,
@@ -76,7 +77,7 @@ export default function HotelCard({ hotel }) {
   }
 
   return (
-    <HotelContainer reserved={hotel.reserved} onClick={() => setSelectedHotel(rooms)}>
+    <HotelContainer reserved={selectedHotel.id ? selectedHotel.id : false} onClick={() => setSelectedHotel(rooms)}>
       <img src={hotel.image} alt={hotel.image}/>
       <h2>{hotel.name}</h2>
       {Reserved(hotel.reserved)}
@@ -109,5 +110,10 @@ const HotelContainer = styled.div`
   }
   h3 {
     font-weight: 700;
+  }
+
+  &:hover{
+    filter: brightness(0.95);
+    cursor: pointer;
   }
 `;
