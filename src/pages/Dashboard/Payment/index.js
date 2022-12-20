@@ -143,7 +143,6 @@ function PaymentStatus({ ticket }) {
       await paid(obj);
       
       toast('Parabéns seu ticket foi pago com sucesso'); 
-      
       ticket.setNewTicket({ ...ticket, status: 'PAID' });
     } catch (error) {
       toast('Ocorreu um erro com o seu pagamento!'); 
