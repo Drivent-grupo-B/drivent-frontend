@@ -1,9 +1,18 @@
-import { useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import HotelContext from '../../contexts/HotelContext';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function HotelCard({ hotel }) {
+  const [capacity, setCapacity] = useState(0);
+
+  useEffect(() => {
+    let cont = 0;
+    hotel.Rooms.map((room) => {
+      cont += room.capacity - room._count.Booking;
+    } );
+    setCapacity(cont);
+  }, []);
   const { rooms } = useHotelRooms(hotel.id);
   const { setSelectedHotel } = useContext(HotelContext);
   let vacancies = 0;
@@ -44,14 +53,33 @@ export default function HotelCard({ hotel }) {
     return 'Triple';
   }
 
+  function Reserved(reserved) {
+    let header = 'Tipos de acomodação:';
+    let renderRoom = renderRoomTypes();
+    let secondHeader = 'Vagas disponíveis:';
+    const cont = capacity;
+
+    if(reserved) {
+      header = 'Quarto reservado';
+      renderRoom = `${ cont } (${ renderRoomTypes() })`;
+      secondHeader = 'Pessoas no seu quarto';
+    }
+
+    return(
+      <>
+        <h3>{ header }</h3>
+        <p>{ renderRoom }</p>
+        <h3>{ secondHeader }</h3>
+        <p>{ cont }</p>
+      </>
+    );
+  }
+
   return (
-    <HotelContainer onClick={() => setSelectedHotel(rooms)}>
-      <img src={hotel.image} alt={hotel.image} />
+    <HotelContainer reserved={hotel.reserved} onClick={() => setSelectedHotel(rooms)}>
+      <img src={hotel.image} alt={hotel.image}/>
       <h2>{hotel.name}</h2>
-      <h3>Tipos de acomodação:</h3>
-      <p>{renderRoomTypes()}</p>
-      <h3>Vagas disponíveis:</h3>
-      <p>{vacancies}</p>
+      {Reserved(hotel.reserved)}
     </HotelContainer>
   );
 }
@@ -60,7 +88,7 @@ const HotelContainer = styled.div`
   width: 196px;
   height: 264px;
   border-radius: 10px;
-  background-color: #ebebeb;
+  background-color: ${props => props.reserved ? '#FFEED2': '#EBEBEB'};
   font-size: 12px;
   color: #343434;
   padding: 16px 14px;
@@ -74,7 +102,8 @@ const HotelContainer = styled.div`
     border-radius: 5px;
     margin-bottom: 10px;
   }
-  h2 {
+  h2{
+    margin: 0px 0px 10px 0px ;
     font-size: 20px;
     margin-bottom: 10px;
   }

@@ -12,6 +12,9 @@ import Button from '../../../components/Form/Button.js';
 import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 import useCreateTicket from '../../../hooks/api/useCreateTicket.js';
 import { toast } from 'react-toastify';
+import EventTypes from './EventTypes';
+import OptionBoxStyle from '../../../components/Payment/OptionBoxStyle';
+import TicketTypeContainer from '../../../components/Payment/TicketTypeContainer';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -59,27 +62,6 @@ export default function Payment() {
   );
 }
 
-function EventTypes({ ticketTypes, selectedType, setSelectedType, setTicketTypeId }) {
-  return (
-    <TicketTypeContainer>
-      <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-      <div>
-        {ticketTypes
-          .filter((type) => !type.includesHotel)
-          .map((type) => (
-            <OptionBox
-              type={type}
-              key={type.id}
-              setSelectedType={setSelectedType}
-              selectedType={selectedType}
-              setTicketTypeId={setTicketTypeId}
-            />
-          ))}
-      </div>
-    </TicketTypeContainer>
-  );
-}
-
 function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
   const [hotelType, setHotelType] = useState({});
   if (Object.keys(selectedType).length === 0) return '';
@@ -107,20 +89,6 @@ function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeI
         ''            
       )}
     </HotelOptionsContainer>
-  );
-}
-
-function OptionBox({ type, setSelectedType, setTicketTypeId, selectedType }) {
-  function handleOption() {
-    setSelectedType({ name: type.name, price: type.price });
-    setTicketTypeId(type.id);
-  }
-
-  return (
-    <OptionBoxStyle selectedType={selectedType.name ? selectedType.name : ''} name={type.name} onClick={handleOption}>
-      <h3>{type.name}</h3>
-      <span>R$ {type.price / 100}</span>
-    </OptionBoxStyle>
   );
 }
 
@@ -258,18 +226,6 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
 
-const TicketTypeContainer = styled.section`
-  h2 {
-    font-size: 20px;
-    color: #8e8e8e;
-  }
-  > div {
-    display: flex;
-    gap: 24px;
-    margin-top: 17px;
-  }
-`;
-
 const HotelOptionsContainer = styled(TicketTypeContainer)`
   margin-top: 44px;
 `;
@@ -294,32 +250,6 @@ const ConfirmationMessage = styled.div`
   }
   h3 {
     font-weight: 700;
-  }
-`;
-
-const OptionBoxStyle = styled.div`
-  width: 145px;
-  height: 145px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: ${(props) => (props.name === props.selectedType ? 'none' : '1px solid #cecece')};
-  border-radius: 20px;
-  background-color: ${(props) => (props.name === props.selectedType ? '#FFEED2' : '#ffffff')};
-  transition: none;
-  h3 {
-    font-size: 16px;
-    color: #454545;
-  }
-  span {
-    font-size: 14px;
-    color: #898989;
-  }
-  &:hover {
-    cursor: pointer;
-    filter: brightness(0.96);
   }
 `;
 
