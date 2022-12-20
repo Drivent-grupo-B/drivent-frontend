@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
+import HotelContext from '../../contexts/HotelContext';
+import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useBooking from '../../hooks/api/useBooking';
 
 export default function HotelCard({ hotel }) {
+  const { rooms } = useHotelRooms(hotel.id);
+  const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
   const roomTypeCorrespondence = {
@@ -87,7 +91,7 @@ export default function HotelCard({ hotel }) {
   }
 
   return (
-    <HotelContainer reserved={hotel.reserved}>
+    <HotelContainer reserved={selectedHotel.id ? selectedHotel.id : false} onClick={() => setSelectedHotel(rooms)}>
       <img src={hotel.image} alt={hotel.image}/>
       <h2>{hotel.name}</h2>
       {Reserved(hotel.reserved)}
@@ -104,10 +108,10 @@ const HotelContainer = styled.div`
   color: #343434;
   padding: 16px 14px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: flex-start;
   margin-right: 19px;
-  img{
+  img {
     width: 168px;
     height: 109px;
     border-radius: 5px;
@@ -118,7 +122,12 @@ const HotelContainer = styled.div`
     font-size: 20px;
     margin-bottom: 10px;
   }
-  h3{
+  h3 {
     font-weight: 700;
+  }
+
+  &:hover{
+    filter: brightness(0.95);
+    cursor: pointer;
   }
 `;

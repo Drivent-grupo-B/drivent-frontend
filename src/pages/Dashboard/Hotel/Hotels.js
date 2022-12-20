@@ -8,7 +8,7 @@ import useHotel from '../../../hooks/api/useHotel.js';
 function MapHotels(hotel, header) {
   return(
     <>
-      <StyledTypography variant="h4">{ header }</StyledTypography>        
+      <StyledTypography variant="h6">{ header }</StyledTypography>        
       <CardsContainer>
         {
           hotel ? hotel.map((hotel) => (

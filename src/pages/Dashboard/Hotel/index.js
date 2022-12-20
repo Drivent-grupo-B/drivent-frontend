@@ -2,6 +2,7 @@ import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
 import Hotels from './Hotels.js';
+import Rooms from './Rooms.js';
 
 export default function Hotel() {
   const { ticket } = useTicket();
@@ -22,7 +23,10 @@ export default function Hotel() {
                 Prossiga para a escolha de atividades
               </h2>
               :
-              <Hotels />
+              <>
+                <Hotels />
+                <Rooms />
+              </>
         }
       </HotelContainer>
     </>
