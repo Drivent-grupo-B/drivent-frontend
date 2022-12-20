@@ -5,15 +5,15 @@ import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import useTicket from '../../../hooks/api/useTicket';
 import { FaCheckCircle } from 'react-icons/fa';
-import CredCard from '../../../hooks/useCredCard';
-import usePaidTicket from '../../../hooks/api/usePaidTicket';
 
 import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
-import { toast } from 'react-toastify';
+
 import EventTypes from './EventTypes';
 import OptionBoxStyle from '../../../components/Payment/OptionBoxStyle';
 import HotelsOptions from './HotelsOptions';
 import TicketSummaryMessage from './TicketSummaryMessage';
+import PaymentStatus from './PaymentStatus';
+import PaymentHead from '../../../components/Payment/PaymentHead';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -120,45 +120,6 @@ function PaymentConfirmed() {
   );
 }
 
-function PaymentStatus({ ticket }) {
-  const [cardComplete, setCardComplete] = useState('');
-  const { paid } = usePaidTicket();
-
-  async function envCard() { 
-    delete cardComplete.acceptedCards;
-    
-    delete cardComplete.focused;
-    
-    const obj = {
-      ticketId: ticket.id,
-      cardData: {
-        issuer: cardComplete.issur,
-        expirationDate: cardComplete.expiry,
-        ...cardComplete
-      }
-    };
-    delete obj.cardData.expiry;
-
-    try {
-      await paid(obj);
-      
-      toast('Parabéns seu ticket foi pago com sucesso'); 
-      ticket.setNewTicket({ ...ticket, status: 'PAID' });
-    } catch (error) {
-      toast('Ocorreu um erro com o seu pagamento!'); 
-    }
-  };
-
-  return(
-    <>
-      <PaymentHead>
-        Pagamento
-      </PaymentHead>
-      <CredCard setCardComplete={setCardComplete} envCard={envCard} />   
-    </>
-  );
-}
-
 const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
@@ -198,12 +159,4 @@ const PaymentStatusContainer = styled(OptionBoxStyle)`
     text-align: center;
     color: #898989;
   }
-`;
-
-const PaymentHead = styled.div`
-  margin: 15px;
-  width: 290px;
-  font-size: 20px;
-  line-height: 23px;
-  color: #8e8e8e;
 `;
