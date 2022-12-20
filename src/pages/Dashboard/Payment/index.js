@@ -233,7 +233,7 @@ function PaymentStatus({ ticket }) {
     delete cardComplete.focused;
     
     const obj = {
-      ticketId: type.id,
+      ticketId: ticket.id,
       cardData: {
         issuer: cardComplete.issur,
         expirationDate: cardComplete.expiry,
@@ -245,7 +245,6 @@ function PaymentStatus({ ticket }) {
       await paid(obj);
       toast('Parabéns seu ticket foi pago com sucesso'); 
     } catch (error) {
-      envCard();
     }
   };
   
