@@ -3,11 +3,23 @@ import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import RoomCard from '../../../components/Hotel/RoomCard';
 import HotelContext from '../../../contexts/HotelContext';
+import useUpsertBooking from '../../../hooks/api/useUpsertBooking.js';
+import { toast } from 'react-toastify';
 
 export default function Rooms() {
   const [selectedRoom, setSelectedRoom] = useState(0);
   const { selectedHotel } = useContext(HotelContext);
+  const { postNewBooking } = useUpsertBooking();
   if (!selectedHotel.id) return '';
+
+  function bookRoom() {
+    try {
+      postNewBooking({ roomId: selectedRoom });
+      toast('Quarto reservado com sucesso!');
+    } catch (error) {
+      toast('Ocorreu um erro com sua reserva!');
+    }
+  }
 
   return (
     <RoomsContainer>
@@ -17,7 +29,7 @@ export default function Rooms() {
           <RoomCard key={room.id} room={room} selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} />
         ))}
       </div>
-      {selectedRoom ? <Button>Reservar Quarto</Button> : ''}
+      {selectedRoom ? <Button onClick={bookRoom}>Reservar Quarto</Button> : ''}
     </RoomsContainer>
   );
 }
