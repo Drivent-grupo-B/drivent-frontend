@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import useBooking from '../../hooks/api/useBooking';
 
 export default function HotelCard({ hotel }) {
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
+  const roomCapacityCorrespondence = {
+    1: 'Single',
+    2: 'Double',
+    3: 'Triple'
+  };
 
   useEffect(() => {
     let cont = 0;
@@ -51,8 +57,9 @@ export default function HotelCard({ hotel }) {
     const cont = capacity;
 
     if(reserved) {
+      const { booking } = useBooking();
       header = 'Quarto reservado';
-      renderRoom = `${ cont } (${ renderRoomTypes() })`;
+      renderRoom = `${ booking.Room.name } (${ roomCapacityCorrespondence[booking.Room.capacity] })`;
       secondHeader = 'Pessoas no seu quarto';
     }
 
