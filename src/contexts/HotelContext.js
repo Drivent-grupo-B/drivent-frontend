@@ -6,5 +6,9 @@ export default HotelContext;
 export function HotelProvider({ children }) {
   const [selectedHotel, setSelectedHotel] = useState({});
 
-  return <HotelContext.Provider value={{ selectedHotel, setSelectedHotel }}>{children}</HotelContext.Provider>;
+  return (
+    <HotelContext.Provider value={{ selectedHotel, setSelectedHotel }}>
+      {children}
+    </HotelContext.Provider>
+  );
 }

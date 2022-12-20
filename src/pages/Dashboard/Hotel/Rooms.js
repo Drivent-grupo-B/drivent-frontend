@@ -23,7 +23,6 @@ const RoomsContainer = styled.section`
   display: flex;
   flex-direction: column;
   margin-top: 52px;
-  margin-bottom: 200px;
 
   h4 {
     font-size: 20px;
@@ -36,5 +35,6 @@ const RoomsContainer = styled.section`
     flex-wrap: wrap;
     row-gap: 8px;
     column-gap: 17px;
+    margin-bottom: 200px;
   }
 `;

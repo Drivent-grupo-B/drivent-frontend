@@ -8,4 +8,14 @@ export async function getBooking(token) {
   });
 
   return response.data;
-};
+}
+
+export async function getRoomBooking(token, roomId) {
+  const response = await api.get(`/booking/${roomId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
