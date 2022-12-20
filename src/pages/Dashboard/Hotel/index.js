@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
 import Hotels from './Hotels.js';
 import Rooms from './Rooms.js';
-import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
 
 export default function Hotel() {
   const { ticket } = useTicket();
@@ -12,16 +11,23 @@ export default function Hotel() {
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
       <HotelContainer>
-        {!ticket || ticket?.status === 'RESERVED' ? (
-          <ForbiddenPage>Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</ForbiddenPage>
-        ) : ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel ? (
-          <ForbiddenPage>Sua modalidade de ingresso não inclui hospedagem Prossiga para a escolha de atividades</ForbiddenPage>
-        ) : (
-          <>
-            <Hotels />
-            <Rooms />
-          </>
-        )}
+        {
+          !ticket || ticket?.status === 'RESERVED' ?
+            <CenterContainer>
+              Você precisa ter confirmado pagamento antes <br />de fazer a escolha de hospedagem
+            </CenterContainer>
+            :
+            (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) ?
+              <h2>
+                Sua modalidade de ingresso não inclui hospedagem
+                Prossiga para a escolha de atividades
+              </h2>
+              :
+              <>
+                <Hotels />
+                <Rooms />
+              </>
+        }
       </HotelContainer>
     </>
   );
@@ -31,10 +37,12 @@ const StyledTypography = styled(Typography)`
   margin-bottom: 27px !important;
 `;
 
+const CenterContainer = styled.div`
+  margin-top: 25% ;
+  text-align: center ;
+`;
+
 const HotelContainer = styled.div`
-  display: flex;
-  height: 80%;
-  flex-direction: column;
   font-size: 20px;
   line-height: 23px;
   color: #8e8e8e;

@@ -35,7 +35,7 @@ function selectHotels() {
   }
   header = 'Você já escolheu seu quarto:';
 
-  const oneHotel = hotels.filter( (hotel) => { if(booking.Room.hotelId === hotel.id) return hotel; });
+  const oneHotel = hotels.filter( (hotel) => booking.Room.hotelId === hotel.id);
   
   oneHotel[0]['reserved']=true;
 

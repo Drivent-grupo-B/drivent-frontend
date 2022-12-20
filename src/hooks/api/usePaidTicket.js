@@ -3,7 +3,7 @@ import useToken from '../useToken';
 
 import * as paymentApi from '../../services/paidTicketApi.js';
 
-export default function usePaidTickete() {
+export default function usePaidTicket() {
   const token = useToken();
   const {
     data: paidTicketData,
