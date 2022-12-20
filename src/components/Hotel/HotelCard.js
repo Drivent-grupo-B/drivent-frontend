@@ -55,12 +55,11 @@ export default function HotelCard({ hotel }) {
     let renderRoom = renderRoomTypes();
     let secondHeader = 'Vagas disponíveis:';
     let cont = capacity;
+    const { booking } = useBooking();
 
-    if(reserved) {
-      const { booking } = useBooking();
-      
-      const roomName = booking ? booking.Room.name : '';
-      const roomType = booking ? roomTypeCorrespondence[booking.Room.capacity] : '';
+    if(reserved && booking) {      
+      const roomName = booking.Room.name;
+      const roomType = roomTypeCorrespondence[booking.Room.capacity];
 
       const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
       const roomOcupants = roomBookings - 1;
