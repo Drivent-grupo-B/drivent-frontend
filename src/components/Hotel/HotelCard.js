@@ -4,21 +4,13 @@ import useHotelRooms from '../../hooks/api/useHotelRooms';
 
 export default function HotelCard({ hotel }) {
   const [capacity, setCapacity] = useState(0);
-  const [roomTypes, setRoomTypes] = useState('');
 
   useEffect(() => {
     let cont = 0;
-    const roomTypesAvailable = {
-      1: 0,
-      2: 0,
-      3: 0,
-    };
-    hotel.Rooms.forEach((room) => {
+    hotel.Rooms.map((room) => {
       cont += room.capacity - room._count.Booking;
-      if (room.capacity - room._count.Booking > 0) roomTypesAvailable[room.capacity] += 1;
-    });
+    } );
     setCapacity(cont);
-    setRoomTypes(roomTypesAvailable);
   }, []);
   const { rooms } = useHotelRooms(hotel.id);
 
@@ -80,31 +72,6 @@ export default function HotelCard({ hotel }) {
         <p>{ cont }</p>
       </>
     );
-  }
-
-  function renderRoomTypes() {
-    if (!roomTypes) return '';
-    if (roomTypes[1] && roomTypes[2] && roomTypes[3]) {
-      return 'Single, Double e Triple';
-    }
-
-    if (roomTypes[1] && roomTypes[2]) {
-      return 'Single e Double';
-    }
-
-    if (roomTypes[1] && roomTypes[3]) {
-      return 'Single e Triple';
-    }
-
-    if (roomTypes[2] && roomTypes[3]) {
-      return 'Double e Triple';
-    }
-    
-    if (roomTypes[1]) return 'Single';
-    
-    if (roomTypes[2]) return 'Double';
-
-    return 'Triple';
   }
 
   return (
