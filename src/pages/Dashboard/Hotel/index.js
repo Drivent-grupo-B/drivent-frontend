@@ -34,15 +34,7 @@ const StyledTypography = styled(Typography)`
 `;
 
 const HotelContainer = styled.div`
-  margin-top: 243px;
-  margin-left: 244px;
-  width: 411px;
-  height: 46px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 20px;
   line-height: 23px;
-  text-align: center;
   color: #8e8e8e;
 `;
