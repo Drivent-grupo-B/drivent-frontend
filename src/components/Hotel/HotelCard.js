@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
+import HotelContext from '../../contexts/HotelContext';
+import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useBooking from '../../hooks/api/useBooking';
 
 export default function HotelCard({ hotel }) {
+  const { rooms } = useHotelRooms(hotel.id);
+  const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
   const roomTypeCorrespondence = {
@@ -54,7 +58,7 @@ export default function HotelCard({ hotel }) {
     let header = 'Tipos de acomodação:';
     let renderRoom = renderRoomTypes();
     let secondHeader = 'Vagas disponíveis:';
-    let cont = capacity;
+    let cont = capacity;    
     const { booking } = useBooking();
 
     if(reserved && booking) {      
@@ -62,8 +66,8 @@ export default function HotelCard({ hotel }) {
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
 
       const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
-      const roomOcupants = roomBookings - 1;
-      cont = defineRoomOcupation(roomOcupants);
+      const roomOccupants = roomBookings - 1;
+      cont = defineRoomOccupation(roomOccupants);
 
       header = 'Quarto reservado';
       renderRoom = `${ roomName } (${ roomType })`;
@@ -80,16 +84,25 @@ export default function HotelCard({ hotel }) {
     );
   }
 
-  function defineRoomOcupation(ocupants) {
-    if (ocupants === 1) return 'Somente você';
+  function defineRoomOccupation(occupants) {
+    if (occupants === 0) return 'Somente você';
 
-    return `Você e mais ${ocupants} pessoas`;
+    return `Você e mais ${occupants} pessoas`;
+  }
+
+  function showRooms({ hotel, rooms }) {
+    if(!hotel.reserved) {
+      setSelectedHotel(rooms);
+    }
   }
 
   return (
-    <HotelContainer reserved={hotel.reserved}>
+    <HotelContainer 
+      reserved={selectedHotel.id ? selectedHotel.id : false} 
+      id={hotel.id} 
+      onClick={() => showRooms({ hotel, rooms })}>
       <img src={hotel.image} alt={hotel.image}/>
-      <h2>{hotel.name}</h2>
+      <h2>{hotel.name}</h2>      
       {Reserved(hotel.reserved)}
     </HotelContainer>
   );
@@ -99,15 +112,15 @@ const HotelContainer = styled.div`
   width: 196px;
   height: 264px;
   border-radius: 10px;
-  background-color: ${props => props.reserved ? '#FFEED2': '#EBEBEB'};
+  background-color: ${props => props.reserved ===  props.id ? '#FFEED2': '#EBEBEB'};
   font-size: 12px;
   color: #343434;
   padding: 16px 14px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: flex-start;
   margin-right: 19px;
-  img{
+  img {
     width: 168px;
     height: 109px;
     border-radius: 5px;
@@ -118,7 +131,12 @@ const HotelContainer = styled.div`
     font-size: 20px;
     margin-bottom: 10px;
   }
-  h3{
+  h3 {
     font-weight: 700;
+  }
+
+  &:hover{
+    filter: brightness(0.95);
+    cursor: pointer;
   }
 `;

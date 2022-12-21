@@ -4,11 +4,13 @@ import { Typography } from '@material-ui/core';
 import HotelCard from '../../../components/Hotel/HotelCard.js';
 import useBooking from '../../../hooks/api/useBooking.js';
 import useHotel from '../../../hooks/api/useHotel.js';
+import { useState } from 'react';
+import Button from '../../../components/Form/Button.js';
 
-function MapHotels(hotel, header) {
+function MapHotels({ hotel, header }) {
   return(
     <>
-      <StyledTypography variant="h4">{ header }</StyledTypography>        
+      <StyledTypography variant="h6">{ header }</StyledTypography>        
       <CardsContainer>
         {
           hotel ? hotel.map((hotel) => (
@@ -26,12 +28,13 @@ function MapHotels(hotel, header) {
 function selectHotels() {
   const { booking } = useBooking(); 
   const { hotels } = useHotel();
-
+  const [changeRoom, setChangeRoom] = useState(false);
   let header = 'Primeiro, escolha seu hotel:';  
   if(!hotels) return [];
   
-  if(!booking) {
-    return MapHotels(hotels, header);
+  if(!booking || changeRoom) { 
+    hotels.forEach((hotel) => hotel.reserved = false);  
+    return <MapHotels hotel={hotels} header={header} />;
   }
   header = 'Você já escolheu seu quarto:';
 
@@ -39,7 +42,12 @@ function selectHotels() {
   
   oneHotel[0]['reserved']=true;
 
-  return MapHotels(oneHotel, header);
+  return (
+    <>
+      <MapHotels hotel={oneHotel} header={header} />
+      <Button onClick={() => setChangeRoom(true)}>Trocar de Quarto</Button>
+    </>
+  );
 }
 
 export default function Hotels() {

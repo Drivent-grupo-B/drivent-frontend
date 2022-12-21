@@ -2,9 +2,19 @@
 
 * {
   box-sizing: border-box;
-  transition: all ease .2s;
+  transition: all ease 0.2s;
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 25px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #FFD77F 0%, #FA4098 100%);
+  border: 8px solid #ffffff;
+  border-radius: 20px;
 }

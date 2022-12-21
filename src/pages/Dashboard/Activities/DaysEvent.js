@@ -1,28 +1,54 @@
 import { Typography } from '@material-ui/core';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useActivitiesDays from '../../../hooks/api/useActivitiesDays';
 
+function choice(dayIdSetSchedule) {
+  console.log(dayIdSetSchedule);
+  dayIdSetSchedule.setSchedule(true);
+}
+
+function OneDay(day) {
+  const [ color, setColor ] = useState(true);
+  function choiceSelect() {
+    if(day.day.schedule) return;
+    setColor(!color);
+    choice({ dayId: day.day.id, setSchedule: day.day.setSchedule });
+  }
+  console.log(day);
+  return(
+    <DayContainer color={color} onClick={ choiceSelect }>{day.children}</DayContainer>
+  );
+}
+
 function MapDays(days) {
-  return days.map((day) => {
+  if(!days.days) return [];
+
+  return days.days.map((day, index) => {
+    const dayFormat = new Date(day.Day)
+      .toLocaleDateString('pt-Br', { weekday: 'long',  month: '2-digit', day: 'numeric' })
+      .replace(/-feira,/g, ' ');
+
     return (
-      <DayContainer>
-        {new Date(day.Day).toLocaleDateString('pt-Br').slice(0, 5) }
-      </DayContainer>
+      <OneDay key={index} day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule }} >
+        { dayFormat }
+      </OneDay>
     );
   }
   );
 }
 
 export default function DaysEvent() {
+  const [ schedule, setSchedule ] = useState();
   const { days } = useActivitiesDays();
-  console.log(days);
+
   return (
     <>
       <StyledTypography>
           Primeiro, filtre pelo dia do evento:
       </StyledTypography>
       <AllDay>
-        {days ? MapDays(days) : ''}
+        {MapDays({ days, setSchedule, schedule })}
       </AllDay>
     </>
   );
@@ -38,10 +64,14 @@ const AllDay = styled.div`
 `;
 
 const DayContainer = styled.div`
-    margin: 0px 15px 0px 0px ;
-    width: 131px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    color:  #000000 ;
+    margin: 0px 15px 15px 0px ;
+    width: 150px;
     height: 37px;
-    background: #E0E0E0;
+    background: ${props => props.color ? '#E0E0E0': '#FFD37D' };
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     display: flex ;
