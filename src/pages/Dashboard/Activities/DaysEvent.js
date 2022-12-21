@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import useActivitiesDays from '../../../hooks/api/useActivitiesDays';
 
 function choice(dayIdSetSchedule) {
-  console.log(dayIdSetSchedule);
   dayIdSetSchedule.setSchedule(true);
 }
 
@@ -14,8 +13,7 @@ function OneDay(day) {
     if(day.day.schedule) return;
     setColor(!color);
     choice({ dayId: day.day.id, setSchedule: day.day.setSchedule });
-  }
-  console.log(day);
+  } 
   return(
     <DayContainer color={color} onClick={ choiceSelect }>{day.children}</DayContainer>
   );

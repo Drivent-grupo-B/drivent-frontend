@@ -8,12 +8,13 @@ import { toast } from 'react-toastify';
 
 export default function Rooms() {
   const [selectedRoom, setSelectedRoom] = useState({});
-  const { selectedHotel } = useContext(HotelContext);
+  const { selectedHotel, setSelectedHotel } = useContext(HotelContext);
   const { postNewBooking } = useUpsertBooking(); 
   if (!selectedHotel.id) return '';  
   function bookRoom() {
     try {
       postNewBooking({ roomId: selectedRoom.id });
+      setSelectedHotel({});
       toast('Quarto reservado com sucesso!');
     } catch (error) {
       toast('Ocorreu um erro com sua reserva!');
