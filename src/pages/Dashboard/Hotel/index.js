@@ -5,8 +5,7 @@ import Hotels from './Hotels.js';
 import Rooms from './Rooms.js';
 
 export default function Hotel() {
-  const { ticket } = useTicket();
-
+  const { ticket } = useTicket();  
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>

@@ -5,13 +5,14 @@ import RoomCard from '../../../components/Hotel/RoomCard';
 import HotelContext from '../../../contexts/HotelContext';
 import useUpsertBooking from '../../../hooks/api/useUpsertBooking.js';
 import { toast } from 'react-toastify';
+import useBooking from '../../../hooks/api/useBooking.js';
 
 export default function Rooms() {
   const [selectedRoom, setSelectedRoom] = useState(0);
   const { selectedHotel } = useContext(HotelContext);
-  const { postNewBooking } = useUpsertBooking();
-  if (!selectedHotel.id) return '';
-
+  const { postNewBooking } = useUpsertBooking();  
+  let { booking } = useBooking();  
+  
   function bookRoom() {
     try {
       postNewBooking({ roomId: selectedRoom });
@@ -22,15 +23,25 @@ export default function Rooms() {
   }
 
   return (
-    <RoomsContainer>
-      <h4>Ótima pedida! Agora escolha seu quarto:</h4>
-      <div>
-        {selectedHotel.Rooms.map((room) => (
-          <RoomCard key={room.id} room={room} selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} />
-        ))}
-      </div>
-      {selectedRoom ? <Button onClick={bookRoom}>Reservar Quarto</Button> : ''}
-    </RoomsContainer>
+    booking ? 
+      <Button onClick={() => booking = false}>Trocar de Quarto</Button>
+      :
+      selectedHotel.id ?
+        <RoomsContainer>
+          <h4>Ótima pedida! Agora escolha seu quarto:</h4>
+          <div>
+            {selectedHotel.Rooms.map((room) => (
+              <RoomCard 
+                key={room.id} 
+                room={room} 
+                selectedRoom={selectedRoom} 
+                setSelectedRoom={setSelectedRoom} />
+            ))}
+          </div>
+          {selectedRoom ? <Button onClick={bookRoom}>Reservar Quarto</Button> : ''}
+        </RoomsContainer>
+        : 
+        ''
   );
 }
 
