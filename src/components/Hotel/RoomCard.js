@@ -9,20 +9,21 @@ export default function RoomCard({ room, selectedRoom, setSelectedRoom }) {
   const [iconsList, setIconsList] = useState([]);
 
   useEffect(() => {
-    if (roomBooking === null) return '';
-    const vacancies = {};
-    let totalCapacity = room.capacity;
-    let totalOfBookings = roomBooking.length;
-    if (totalCapacity === totalOfBookings) setIsFull(true);
-
-    while (totalCapacity > 0) {
-      vacancies[totalCapacity] = 'avaiable';
-      if (totalOfBookings > 0) vacancies[totalCapacity] = 'unavaiable';
-      totalCapacity -= 1;
-      totalOfBookings -= 1;
+    if (roomBooking) {
+      const vacancies = {};
+      let totalCapacity = room.capacity;
+      let totalOfBookings = roomBooking.length;
+      if (totalCapacity === totalOfBookings) setIsFull(true);
+  
+      while (totalCapacity > 0) {
+        vacancies[totalCapacity] = 'avaiable';
+        if (totalOfBookings > 0) vacancies[totalCapacity] = 'unavaiable';
+        totalCapacity -= 1;
+        totalOfBookings -= 1;
+      }
+  
+      setIconsList(Object.values(vacancies));
     }
-
-    setIconsList(Object.values(vacancies));
   }, [roomBooking, room]);
 
   function selectRoom() {
