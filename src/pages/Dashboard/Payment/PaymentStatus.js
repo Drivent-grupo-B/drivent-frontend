@@ -3,21 +3,22 @@ import { toast } from 'react-toastify';
 import usePaidTicket from '../../../hooks/api/usePaidTicket';
 import { useState } from 'react';
 import PaymentHead from '../../../components/Payment/PaymentHead';
+
 export default function PaymentStatus({ ticket }) {
   const [cardComplete, setCardComplete] = useState('');
   const { paid } = usePaidTicket();
   
-  async function envCard() { 
-    delete cardComplete.acceptedCards;
+  async function envCard(card) { 
+    delete card.acceptedCards;
       
-    delete cardComplete.focused;
+    delete card.focused;
       
     const paymentBody = {
       ticketId: ticket.id,
       cardData: {
-        issuer: cardComplete.issur,
-        expirationDate: cardComplete.expiry,
-        ...cardComplete
+        issuer: card.issur,
+        expirationDate: card.expiry,
+        ...card
       }
     };
     delete paymentBody.cardData.expiry;
@@ -37,7 +38,7 @@ export default function PaymentStatus({ ticket }) {
       <PaymentHead>
         Pagamento
       </PaymentHead>
-      <CredCard setCardComplete={setCardComplete} envCard={envCard} />   
+      <CredCard cardComplete={ cardComplete } setCardComplete={setCardComplete} envCard={envCard} />   
     </>
   );
 }

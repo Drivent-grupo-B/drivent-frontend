@@ -3,7 +3,7 @@ import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import styled from 'styled-components';
 
-export default function CredCard({ setCardComplete, envCard }) {
+export default function CredCard({ cardComplete, setCardComplete, envCard }) {
   const[ card, setCard ] = useState( {
     cvv: '',
     expiry: '',
@@ -16,8 +16,7 @@ export default function CredCard({ setCardComplete, envCard }) {
   function cardComplet() {
     if(card.cvv === '' || card.expiry === '' || card.focused === '' || card.name === '' || card.number === '')return;
     if(isNaN(Number(card.number) && Number(card.expiry) && Number(card.cvv)) || card.issuer === 'UNKNOWN' ) return;
-    setCardComplete(card);
-    envCard();
+    envCard(card);
   }
 
   return (
@@ -91,6 +90,7 @@ const Button = styled.button`
     border: 0px ;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     animation: fadeIn 1s;
+    cursor: pointer;
     :active{
         transform: translate(-5px, 5px);      
     }
