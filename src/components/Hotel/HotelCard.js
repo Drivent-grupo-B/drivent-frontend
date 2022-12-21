@@ -58,7 +58,7 @@ export default function HotelCard({ hotel }) {
     let header = 'Tipos de acomodação:';
     let renderRoom = renderRoomTypes();
     let secondHeader = 'Vagas disponíveis:';
-    let cont = capacity;
+    let cont = capacity;    
     const { booking } = useBooking();
 
     if(reserved && booking) {      
@@ -85,15 +85,24 @@ export default function HotelCard({ hotel }) {
   }
 
   function defineRoomOcupation(ocupants) {
-    if (ocupants === 1) return 'Somente você';
+    if (ocupants === 0) return 'Somente você';
 
     return `Você e mais ${ocupants} pessoas`;
   }
 
+  function showRooms({ hotel, rooms }) {
+    if(!hotel.reserved) {
+      setSelectedHotel(rooms);
+    }
+  }
+
   return (
-    <HotelContainer reserved={selectedHotel.id ? selectedHotel.id : false} id={hotel.id} onClick={() => setSelectedHotel(rooms)}>
+    <HotelContainer 
+      reserved={selectedHotel.id ? selectedHotel.id : false} 
+      id={hotel.id} 
+      onClick={() => showRooms({ hotel, rooms })}>
       <img src={hotel.image} alt={hotel.image}/>
-      <h2>{hotel.name}</h2>
+      <h2>{hotel.name}</h2>      
       {Reserved(hotel.reserved)}
     </HotelContainer>
   );
