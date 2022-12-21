@@ -39,8 +39,6 @@ function selectHotels() {
   
   oneHotel[0]['reserved']=true;
 
-  oneHotel[0]['selectHotels']=selectHotels;
-
   return MapHotels(oneHotel, header);
 }
 
