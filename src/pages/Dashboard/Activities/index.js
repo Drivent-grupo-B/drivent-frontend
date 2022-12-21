@@ -1,22 +1,26 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
+import DaysEvent from './DaysEvent';
 
 function DescriptionChoice(ticket) {
-  if( !ticket.ticketTypeId.isRemote ) {
+  if( !ticket || ticket.status === 'RESERVED') {
     return(
-      <>
-        Você não precisa escolher as atividades
-      </>
+      <CenterContainer>
+        Você precisa ter confirmado pagamento antes 
+        <br/>
+        de fazer a escolha de atividade
+      </CenterContainer>
     );
   }
-  return(
-    <>
-      Você precisa ter confirmado pagamento antes 
-      <br/>
-      de fazer a escolha de atividade
-    </>
-  );
+  
+  if( !ticket.ticketTypeId.isRemote ) {
+    return(
+      <CenterContainer>
+        Você não precisa escolher as atividades
+      </CenterContainer>
+    );
+  }
 }
 
 export default function Activities() {
@@ -26,12 +30,10 @@ export default function Activities() {
     <>
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
       <ActivitContainer>
-        { ticket && ticket.status === 'RESERVED' ?
-          <CenterContainer>
-            {DescriptionChoice(ticket)}
-          </CenterContainer>
+        { !ticket ?
+          DescriptionChoice(ticket)
           :
-          'ola'
+          <DaysEvent />
         }
       </ActivitContainer>
     </>
