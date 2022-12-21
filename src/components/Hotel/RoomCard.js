@@ -28,8 +28,8 @@ export default function RoomCard({ room, selectedRoom, setSelectedRoom }) {
   function selectRoom() {
     if (isFull) return;
 
-    setSelectedRoom(room.id);
-    if (selectedRoom === room.id) return;
+    setSelectedRoom({ id: room.id, hotelId: room.hotelId });
+    if (selectedRoom.id === room.id) return;
 
     const icons = [...iconsList];
     const hasSelected = icons.find((icon) => icon === 'selected');
@@ -46,11 +46,11 @@ export default function RoomCard({ room, selectedRoom, setSelectedRoom }) {
   }
 
   return (
-    <CardStyle isFull={isFull} selectedRoom={selectedRoom} roomId={room.id} onClick={selectRoom}>
+    <CardStyle isFull={isFull} selectedRoom={selectedRoom.id} roomId={room.id} onClick={selectRoom}>
       <h5>{room.name}</h5>
       <div>
         {iconsList.map((vacancy, index) => {
-          if (vacancy === 'selected' && selectedRoom === room.id) {
+          if (vacancy === 'selected' && selectedRoom.id === room.id) {
             return <IoPerson key={index} color="#FF4791" />;
           } else if (vacancy === 'unavaiable') {
             return <IoPerson key={index} />;
