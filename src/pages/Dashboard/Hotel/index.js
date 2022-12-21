@@ -5,7 +5,23 @@ import Hotels from './Hotels.js';
 import Rooms from './Rooms.js';
 
 export default function Hotel() {
-  const { ticket } = useTicket();  
+  const { ticket } = useTicket();
+
+  function renderHotelsAndRooms() {
+    return (
+      (!ticket?.TicketType.includesHotel) ?
+        <h2>
+          Sua modalidade de ingresso não inclui hospedagem
+          Prossiga para a escolha de atividades
+        </h2>
+        :
+        <>
+          <Hotels />
+          <Rooms />
+        </>
+    );
+  }
+
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
@@ -16,16 +32,7 @@ export default function Hotel() {
               Você precisa ter confirmado pagamento antes <br />de fazer a escolha de hospedagem
             </CenterContainer>
             :
-            (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) ?
-              <h2>
-                Sua modalidade de ingresso não inclui hospedagem
-                Prossiga para a escolha de atividades
-              </h2>
-              :
-              <>
-                <Hotels />
-                <Rooms />
-              </>
+            renderHotelsAndRooms()
         }
       </HotelContainer>
     </>
