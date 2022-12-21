@@ -91,7 +91,7 @@ export default function HotelCard({ hotel }) {
   }
 
   return (
-    <HotelContainer reserved={selectedHotel.id ? selectedHotel.id : false} onClick={() => setSelectedHotel(rooms)}>
+    <HotelContainer reserved={selectedHotel.id ? selectedHotel.id : false} id={hotel.id} onClick={() => setSelectedHotel(rooms)}>
       <img src={hotel.image} alt={hotel.image}/>
       <h2>{hotel.name}</h2>
       {Reserved(hotel.reserved)}
@@ -103,7 +103,7 @@ const HotelContainer = styled.div`
   width: 196px;
   height: 264px;
   border-radius: 10px;
-  background-color: ${props => props.reserved ? '#FFEED2': '#EBEBEB'};
+  background-color: ${props => props.reserved ===  props.id ? '#FFEED2': '#EBEBEB'};
   font-size: 12px;
   color: #343434;
   padding: 16px 14px;
