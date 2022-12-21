@@ -7,7 +7,7 @@ import useUpsertBooking from '../../../hooks/api/useUpsertBooking.js';
 import { toast } from 'react-toastify';
 
 export default function Rooms() {
-  const [selectedRoom, setSelectedRoom] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState({});
   const { selectedHotel } = useContext(HotelContext);
   const { postNewBooking } = useUpsertBooking();
   if (!selectedHotel.id) return '';
@@ -29,7 +29,7 @@ export default function Rooms() {
           <RoomCard key={room.id} room={room} selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} />
         ))}
       </div>
-      {selectedRoom ? <Button onClick={bookRoom}>Reservar Quarto</Button> : ''}
+      {selectedRoom.hotelId === selectedHotel.id ? <Button onClick={bookRoom}>Reservar Quarto</Button> : ''}
     </RoomsContainer>
   );
 }
