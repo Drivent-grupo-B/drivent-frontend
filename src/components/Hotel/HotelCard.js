@@ -66,8 +66,8 @@ export default function HotelCard({ hotel }) {
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
 
       const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
-      const roomOcupants = roomBookings - 1;
-      cont = defineRoomOcupation(roomOcupants);
+      const roomOccupants = roomBookings - 1;
+      cont = defineRoomOccupation(roomOccupants);
 
       header = 'Quarto reservado';
       renderRoom = `${ roomName } (${ roomType })`;
@@ -84,10 +84,10 @@ export default function HotelCard({ hotel }) {
     );
   }
 
-  function defineRoomOcupation(ocupants) {
-    if (ocupants === 0) return 'Somente você';
+  function defineRoomOccupation(occupants) {
+    if (occupants === 0) return 'Somente você';
 
-    return `Você e mais ${ocupants} pessoas`;
+    return `Você e mais ${occupants} pessoas`;
   }
 
   function showRooms({ hotel, rooms }) {
