@@ -3,17 +3,14 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import useActivitiesDays from '../../../hooks/api/useActivitiesDays';
 
-function choice(dayIdSetSchedule) {
-  dayIdSetSchedule.setSchedule(true);
-}
-
 function OneDay(day) {
   const [ color, setColor ] = useState(true);
+
   function choiceSelect() {
     if(day.day.schedule) return;
     setColor(!color);
-    choice({ dayId: day.day.id, setSchedule: day.day.setSchedule });
-  } 
+    day.day.setSchedule({ dayId: day.day.id });
+  }
   return(
     <DayContainer color={color} onClick={ choiceSelect }>{day.children}</DayContainer>
   );
@@ -28,7 +25,7 @@ function MapDays(days) {
       .replace(/-feira,/g, ' ');
 
     return (
-      <OneDay key={index} day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule }} >
+      <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule }} >
         { dayFormat }
       </OneDay>
     );
@@ -36,8 +33,7 @@ function MapDays(days) {
   );
 }
 
-export default function DaysEvent() {
-  const [ schedule, setSchedule ] = useState();
+export default function DaysEvent({ schedule }) {
   const { days } = useActivitiesDays();
 
   return (
@@ -46,7 +42,7 @@ export default function DaysEvent() {
           Primeiro, filtre pelo dia do evento:
       </StyledTypography>
       <AllDay>
-        {MapDays({ days, setSchedule, schedule })}
+        { MapDays( { days, setSchedule: schedule.setSchedule, schedule: schedule.schedule } ) }
       </AllDay>
     </>
   );
