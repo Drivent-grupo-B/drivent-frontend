@@ -4,19 +4,18 @@ import styled from 'styled-components';
 import useActivitiesDays from '../../../hooks/api/useActivitiesDays';
 
 function OneDay(day) {
-  const [ color, setColor ] = useState(true);
-
+  const isColored = day.day.id !== day.day.coloredDay;
   function choiceSelect() {
-    if(day.day.schedule) return;
-    setColor(!color);
     day.day.setSchedule({ dayId: day.day.id });
+    day.day.setColoredDay(day.day.id);
   }
   return(
-    <DayContainer color={color} onClick={ choiceSelect }>{day.children}</DayContainer>
+    <DayContainer color={isColored} onClick={ choiceSelect }>{day.children}</DayContainer>
   );
 }
 
 function MapDays(days) {
+  const [ coloredDay, setColoredDay ] = useState(-1);
   if(!days.days) return [];
 
   return days.days.map((day, index) => {
@@ -25,7 +24,7 @@ function MapDays(days) {
       .replace(/-feira,/g, ' ');
 
     return (
-      <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule }} >
+      <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule, key: index, coloredDay, setColoredDay }} >
         { dayFormat }
       </OneDay>
     );
@@ -71,4 +70,5 @@ const DayContainer = styled.div`
     display: flex ;
     align-items: center ;
     justify-content: center ;
+    cursor: pointer;
 `;
