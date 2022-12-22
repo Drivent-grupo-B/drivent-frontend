@@ -1,11 +1,15 @@
 import { Typography } from '@material-ui/core';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
 import Hotels from './Hotels.js';
 import Rooms from './Rooms.js';
 
 export default function Hotel() {
-  const { ticket } = useTicket();  
+  const { ticket } = useTicket();
+  const [isClicked, setIsClicked] = useState(false);
+  const [newBooking, setNewBooking] = useState(null);
+
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
@@ -17,14 +21,14 @@ export default function Hotel() {
             </CenterContainer>
             :
             (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) ?
-              <h2>
-                Sua modalidade de ingresso não inclui hospedagem
-                Prossiga para a escolha de atividades
-              </h2>
+              <CenterContainer>
+                <p>Sua modalidade de ingresso não inclui hospedagem</p>
+                <p>Prossiga para a escolha de atividades</p>
+              </CenterContainer>
               :
               <>
-                <Hotels />
-                <Rooms />
+                <Hotels isClicked={isClicked} setIsClicked={setIsClicked} newBooking={newBooking}/>
+                <Rooms setIsClicked={setIsClicked} isClicked={isClicked} setNewBooking={setNewBooking}/>
               </>
         }
       </HotelContainer>

@@ -6,14 +6,16 @@ import HotelContext from '../../../contexts/HotelContext';
 import useUpsertBooking from '../../../hooks/api/useUpsertBooking.js';
 import { toast } from 'react-toastify';
 
-export default function Rooms() {
+export default function Rooms({ setIsClicked, isClicked, setNewBooking }) {
   const [selectedRoom, setSelectedRoom] = useState({});
   const { selectedHotel } = useContext(HotelContext);
   const { postNewBooking } = useUpsertBooking(); 
-  if (!selectedHotel.id) return '';  
-  function bookRoom() {
+  if (!selectedHotel.id || isClicked) return '';  
+  async function bookRoom() {
     try {
-      postNewBooking({ roomId: selectedRoom.id });
+      const newBooking = await postNewBooking({ roomId: selectedRoom.id });
+      setNewBooking(newBooking);
+      setIsClicked(true);
       toast('Quarto reservado com sucesso!');
     } catch (error) {
       toast('Ocorreu um erro com sua reserva!');

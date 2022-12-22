@@ -25,20 +25,21 @@ function MapHotels({ hotel, header }) {
   );
 }
 
-function selectHotels() {
+function selectHotels({ isClicked, setIsClicked, newBooking }) {
   const { booking } = useBooking(); 
   const { hotels } = useHotel();
   const [changeRoom, setChangeRoom] = useState(false);
   let header = 'Primeiro, escolha seu hotel:';  
   if(!hotels) return [];
-  
-  if(!booking || changeRoom) { 
+  console.log({ booking, newBooking, changeRoom, isClicked });
+ 
+  if((!booking && !newBooking) || (changeRoom && !isClicked)) { 
     hotels.forEach((hotel) => hotel.reserved = false);  
     return <MapHotels hotel={hotels} header={header} />;
   }
   header = 'Você já escolheu seu quarto:';
 
-  const oneHotel = hotels.filter( (hotel) => booking.Room.hotelId === hotel.id);
+  const oneHotel = hotels.filter( (hotel) => booking ? booking.Room.hotelId === hotel.id : newBooking.Room.hotelId === hotel.id);
   
   oneHotel[0]['reserved']=true;
 
@@ -47,16 +48,16 @@ function selectHotels() {
   return (
     <>
       <MapHotels hotel={oneHotel} header={header} />
-      <Button onClick={() => setChangeRoom(true)}>Trocar de Quarto</Button>
+      <Button onClick={() => {setChangeRoom(true); setIsClicked(false);}}>Trocar de Quarto</Button>
     </>
   );
 }
 
-export default function Hotels() {
+export default function Hotels({ isClicked, setIsClicked, newBooking }) {
   return(
     <>
       {
-        selectHotels()          
+        selectHotels({ isClicked, setIsClicked, newBooking })          
       }
     </>
   );
