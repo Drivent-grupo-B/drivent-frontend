@@ -1,9 +1,11 @@
 import { Typography } from '@material-ui/core';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
 import DaysEvent from './DaysEvent';
+import ScheduleEvent from './ScheduleEvent';
 
-function DescriptionChoice(ticket) {
+function DescriptionChoice( ticket ) {
   if( !ticket || ticket.status === 'RESERVED') {
     return(
       <CenterContainer>
@@ -24,18 +26,27 @@ function DescriptionChoice(ticket) {
 }
 
 export default function Activities() {
+  const [ schedule, setSchedule ] = useState();
   const { ticket } = useTicket();  
 
   return (
     <>
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
       <ActivitContainer>
-        { !ticket ?
-          DescriptionChoice(ticket)
-          :
-          <DaysEvent />
+        { 
+          !ticket ?
+            DescriptionChoice(ticket)
+            :
+            <DaysEvent schedule={{ schedule, setSchedule }}/>
         }
       </ActivitContainer>
+      { 
+        schedule ? 
+          <ScheduleEvent schedule={{ schedule, setSchedule }} />  
+          : 
+          '' 
+      }
+
     </>
   );
 }
