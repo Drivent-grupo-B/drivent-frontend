@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 export default function Rooms({ setIsClicked, isClicked, setNewBooking }) {
   const [selectedRoom, setSelectedRoom] = useState({});
-  const { selectedHotel } = useContext(HotelContext);
+  const { selectedHotel, setSelectedHotel } = useContext(HotelContext);
   const { postNewBooking } = useUpsertBooking(); 
   if (!selectedHotel.id || isClicked) return '';  
   async function bookRoom() {
@@ -16,6 +16,7 @@ export default function Rooms({ setIsClicked, isClicked, setNewBooking }) {
       const newBooking = await postNewBooking({ roomId: selectedRoom.id });
       setNewBooking(newBooking);
       setIsClicked(true);
+      setSelectedHotel({});
       toast('Quarto reservado com sucesso!');
     } catch (error) {
       toast('Ocorreu um erro com sua reserva!');

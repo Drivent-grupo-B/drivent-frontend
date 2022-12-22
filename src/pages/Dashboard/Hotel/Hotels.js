@@ -4,8 +4,9 @@ import { Typography } from '@material-ui/core';
 import HotelCard from '../../../components/Hotel/HotelCard.js';
 import useBooking from '../../../hooks/api/useBooking.js';
 import useHotel from '../../../hooks/api/useHotel.js';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Button from '../../../components/Form/Button.js';
+import HotelContext from '../../../contexts/HotelContext.js';
 
 function MapHotels({ hotel, header, newBooking }) {
   return(
@@ -29,6 +30,7 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
   const { booking } = useBooking(); 
   const { hotels } = useHotel();
   const [changeRoom, setChangeRoom] = useState(false);
+  const { setSelectedHotel } = useContext(HotelContext);
   let header = 'Primeiro, escolha seu hotel:';  
   if(!hotels) return [];
  
@@ -47,7 +49,11 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
   return (
     <>
       <MapHotels hotel={oneHotel} newBooking={newBooking} header={header} />
-      <Button onClick={() => {setChangeRoom(true); setIsClicked(false);}}>Trocar de Quarto</Button>
+      <Button onClick={() => {
+        setChangeRoom(true); 
+        setIsClicked(false);
+        setSelectedHotel({});
+      }}>Trocar de Quarto</Button>
     </>
   );
 }
