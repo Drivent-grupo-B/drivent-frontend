@@ -64,11 +64,9 @@ export default function HotelCard({ hotel, newBooking }) {
     if(reserved && booking) {      
       const roomName = booking.Room.name;
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
-      console.log(hotel.Rooms.filter(room => room.id === newBooking?.Room.id || room.id === booking?.Room.id));
-      console.log({ hotel, booking, newBooking });
 
       const roomBookings = hotel.Rooms.find(room => {return room.id === booking.Room.id || room.id === newBooking?.Room.id;})._count.Booking;
-      const roomOccupants = roomBookings - 1;
+      const roomOccupants = newBooking ? roomBookings : roomBookings - 1;
       cont = defineRoomOccupation(roomOccupants);
 
       header = 'Quarto reservado';
