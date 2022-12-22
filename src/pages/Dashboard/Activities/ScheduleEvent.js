@@ -1,98 +1,62 @@
 import styled from 'styled-components';
-import useDaySchedule from '../../../hooks/api/useDaySchedule.js';
 import { FaDoorOpen } from 'react-icons/fa';
+import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
 
-export default function ScheduleEvent({ schedule }) {
-  const { scheduleDay } = useDaySchedule(schedule.schedule.dayId);
-  console.log(scheduleDay);
+export default function ScheduleEvent({ activities }) {
+  const { activitiesRooms } = useActivitiesRooms();
+
   return(
     <ScheduleContainer>
-      <div>
-        <h2>Auditório Principal</h2>
-        <ActivitiesContainer>
-          <Activity height={1}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-          <Activity height={1}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-        </ActivitiesContainer>
-      </div>
-      <div>
-        <h2>Auditório Lateral</h2>
-        <ActivitiesContainer>
-          <Activity height={1}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-          <Activity height={1}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-        </ActivitiesContainer>
-      </div>
-      <div>
-        <h2>Sala de Workshop</h2>
-        <ActivitiesContainer>
-          <Activity height={1}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-          <Activity height={2} full={false}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>27 vagas</p>
-            </div>
-          </Activity>
-          <Activity height={3} full={true}>
-            <div className='activity-details'>
-              <b>Minecraft: Montando o PC ideal</b>
-              <p>09:00 - 10:00</p>
-            </div>
-            <div className='activity-occupancy'>
-              <FaDoorOpen />
-              <p>Esgotado</p>
-            </div>
-          </Activity>
-        </ActivitiesContainer>
-      </div>
+      { activitiesRooms?.map(room => (
+        <ActivityRoomItinerary key={ room.id } room={room} activities={activities} />
+      )) }
     </ScheduleContainer>
+  );
+}
+
+function ActivityRoomItinerary({ room, activities }) {
+  function getDateHours(date) {
+    return (new Date(date)).getHours();
+  }
+
+  function calculateActivityTime(startTime, endTime) {
+    const startHour = getDateHours(startTime);
+    const endHour = getDateHours(endTime);
+    
+    return endHour - startHour;
+  }
+
+  function renderActivityPeriod(startTime, endTime) {
+    const startHour = getDateHours(startTime)+3;
+    const endHour = getDateHours(endTime)+3;
+
+    return `${startHour}:00 - ${endHour}:00`;
+  }
+
+  return (
+    <div>
+      <h2>{ room.name }</h2>
+      <ActivitiesContainer>
+        {
+          activities.map(activity => {
+            if (activity.ActivityRoomId !== room.id) return<></>;
+
+            return (
+              <ActivityWrapper key={activity.id} height={calculateActivityTime(activity.startTime, activity.endTime)}>
+                <div className='activity-details'>
+                  <b>{ activity.name }</b>
+                  <p>{ renderActivityPeriod(activity.startTime, activity.endTime) }</p>
+                </div>
+                <div className='activity-occupancy'>
+                  <FaDoorOpen />
+                  <p>27 vagas</p>
+                </div>
+              </ActivityWrapper>
+            );
+          })
+        }
+      </ActivitiesContainer>
+    </div>
   );
 }
 
@@ -129,7 +93,7 @@ const ActivitiesContainer = styled.div`
   }
 `;
 
-const Activity = styled.div`
+const ActivityWrapper = styled.div`
   width: 100%;
   height: ${props => props.height*80}px;
   padding: 12px 10px;
