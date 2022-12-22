@@ -1,11 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import HotelContext from '../../contexts/HotelContext';
-import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useBooking from '../../hooks/api/useBooking';
 
 export default function HotelCard({ hotel, newBooking }) {
-  const { rooms } = useHotelRooms(hotel.id);
   const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
@@ -65,7 +63,7 @@ export default function HotelCard({ hotel, newBooking }) {
       const roomName = booking.Room.name;
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
 
-      const roomBookings = hotel.Rooms.find(room => {return room.id === booking.Room.id || room.id === newBooking?.Room.id;})._count.Booking;
+      const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id || room.id === newBooking?.Room.id)[0]._count.Booking;
       const roomOccupants = newBooking ? roomBookings : roomBookings - 1;
       cont = defineRoomOccupation(roomOccupants);
 
@@ -90,9 +88,9 @@ export default function HotelCard({ hotel, newBooking }) {
     return `Você e mais ${occupants} pessoas`;
   }
 
-  function showRooms({ hotel, rooms }) {
+  function showRooms({ hotel }) {
     if(!hotel.reserved) {
-      setSelectedHotel(rooms);
+      setSelectedHotel(hotel);
     }
   }
 
@@ -100,7 +98,7 @@ export default function HotelCard({ hotel, newBooking }) {
     <HotelContainer 
       reserved={selectedHotel.id ? selectedHotel.id : false} 
       id={hotel.id} 
-      onClick={() => showRooms({ hotel, rooms })}>
+      onClick={() => showRooms({ hotel })}>
       <img src={hotel.image} alt={hotel.image}/>
       <h2>{hotel.name}</h2>      
       {Reserved(hotel.reserved)}

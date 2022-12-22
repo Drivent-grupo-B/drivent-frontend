@@ -44,16 +44,14 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
 
   oneHotel[0]['reserved']=true;
 
-  oneHotel[0]['selectHotels']=selectHotels;
-
   return (
     <>
       <MapHotels hotel={oneHotel} newBooking={newBooking} header={header} />
-      <Button onClick={() => {
+      <ButtonChangeRoom onClick={() => {
         setChangeRoom(true); 
         setIsClicked(false);
         setSelectedHotel({});
-      }}>Trocar de Quarto</Button>
+      }}>Trocar de Quarto</ButtonChangeRoom>
     </>
   );
 }
@@ -75,4 +73,8 @@ const StyledTypography = styled(Typography)`
 const CardsContainer = styled.div`
   display: flex ;
   width: 100% ;
+`;
+
+const ButtonChangeRoom = styled(Button)`
+  margin-top: 38px !important;
 `;

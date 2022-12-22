@@ -10,6 +10,20 @@ export default function Hotel() {
   const [isClicked, setIsClicked] = useState(false);
   const [newBooking, setNewBooking] = useState(null);
 
+  function renderHotelsAndRooms() {
+    return !ticket?.TicketType.includesHotel ? (
+      <CenterContainer>
+        <p>Sua modalidade de ingresso não inclui hospedagem</p>
+        <p>Prossiga para a escolha de atividades</p>
+      </CenterContainer>
+    ) : (
+      <>
+        <Hotels isClicked={isClicked} setIsClicked={setIsClicked} newBooking={newBooking} />
+        <Rooms isClicked={isClicked} setIsClicked={setIsClicked} setNewBooking={setNewBooking} />
+      </>
+    );
+  }
+
   return (
     <>
       <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
@@ -17,19 +31,10 @@ export default function Hotel() {
         {
           !ticket || ticket?.status === 'RESERVED' ?
             <CenterContainer>
-              Você precisa ter confirmado pagamento antes <br />de fazer a escolha de hospedagem
+              Você precisa ter confirmado pagamento antes <br /> de fazer a escolha de hospedagem
             </CenterContainer>
-            :
-            (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) ?
-              <CenterContainer>
-                <p>Sua modalidade de ingresso não inclui hospedagem</p>
-                <p>Prossiga para a escolha de atividades</p>
-              </CenterContainer>
-              :
-              <>
-                <Hotels isClicked={isClicked} setIsClicked={setIsClicked} newBooking={newBooking}/>
-                <Rooms setIsClicked={setIsClicked} isClicked={isClicked} setNewBooking={setNewBooking}/>
-              </>
+            : 
+            renderHotelsAndRooms()
         }
       </HotelContainer>
     </>
@@ -41,8 +46,8 @@ const StyledTypography = styled(Typography)`
 `;
 
 const CenterContainer = styled.div`
-  margin-top: 25% ;
-  text-align: center ;
+  margin-top: 25%;
+  text-align: center;
 `;
 
 const HotelContainer = styled.div`

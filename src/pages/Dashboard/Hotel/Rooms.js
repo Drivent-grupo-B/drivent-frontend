@@ -28,7 +28,7 @@ export default function Rooms({ setIsClicked, isClicked, setNewBooking }) {
       <h4>Ótima pedida! Agora escolha seu quarto:</h4>
       <div>
         {selectedHotel.Rooms.map((room) => (
-          <RoomCard 
+          <RoomCard
             key={room.id} 
             room={room} 
             selectedRoom={selectedRoom} 
@@ -63,5 +63,6 @@ const RoomsContainer = styled.section`
   > button {
     width: 182px;
     height: 37px;
+    font-size: 14px;
   }
 `;

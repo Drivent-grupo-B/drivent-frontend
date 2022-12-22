@@ -1,39 +1,52 @@
 import { Typography } from '@material-ui/core';
+import { useState } from 'react';
 import styled from 'styled-components';
 import useTicket from '../../../hooks/api/useTicket.js';
+import DaysEvent from './DaysEvent';
+import ScheduleEvent from './ScheduleEvent';
 
-function DescriptionChoice(ticket) {
-  if( !ticket.ticketTypeId.isRemote ) {
+function DescriptionChoice( ticket ) {
+  if( !ticket || ticket.status === 'RESERVED') {
     return(
-      <>
-        Você não precisa escolher as atividades
-      </>
+      <CenterContainer>
+        Você precisa ter confirmado pagamento antes 
+        <br/>
+        de fazer a escolha de atividade
+      </CenterContainer>
     );
   }
-  return(
-    <>
-      Você precisa ter confirmado pagamento antes 
-      <br/>
-      de fazer a escolha de atividade
-    </>
-  );
+  
+  if( !ticket.ticketTypeId.isRemote ) {
+    return(
+      <CenterContainer>
+        Você não precisa escolher as atividades
+      </CenterContainer>
+    );
+  }
 }
 
 export default function Activities() {
+  const [ schedule, setSchedule ] = useState();
   const { ticket } = useTicket();  
 
   return (
     <>
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
       <ActivitContainer>
-        { ticket && ticket.status === 'RESERVED' ?
-          <CenterContainer>
-            {DescriptionChoice(ticket)}
-          </CenterContainer>
-          :
-          'ola'
+        { 
+          !ticket ?
+            DescriptionChoice(ticket)
+            :
+            <DaysEvent schedule={{ schedule, setSchedule }}/>
         }
       </ActivitContainer>
+      { 
+        schedule ? 
+          <ScheduleEvent schedule={{ schedule, setSchedule }} />  
+          : 
+          '' 
+      }
+
     </>
   );
 }
