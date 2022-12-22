@@ -9,11 +9,12 @@ import { FaCheckCircle } from 'react-icons/fa';
 import useTicketTypes from '../../../hooks/api/useTicketTypes.js';
 
 import EventTypes from './EventTypes';
-import OptionBoxStyle from '../../../components/Payment/OptionBoxStyle';
 import HotelsOptions from './HotelsOptions';
 import TicketSummaryMessage from './TicketSummaryMessage';
 import PaymentStatus from './PaymentStatus';
 import PaymentHead from '../../../components/Payment/PaymentHead';
+import PaymentStatusContainer from '../../../components/Payment/PaymentStatusContainer';
+import ConfirmationMessage from '../../../components/Payment/ConfirmationMessage';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
@@ -138,34 +139,5 @@ const PaymentContainer = styled.section`
   h2 {
     font-size: 20px;
     color: #8e8e8e;
-  }
-`;
-
-const ConfirmationMessage = styled.div`
-  display: flex;
-  gap: 14px;
-  margin-top: 17px;
-  font-size: 16px;
-  line-height: 19px;
-  & > *:first-child {
-    font-size: 40px;
-    color: #36b853;
-  }
-  h3 {
-    font-weight: 700;
-  }
-`;
-
-const PaymentStatusContainer = styled(OptionBoxStyle)`
-  width: 290px;
-  height: 108px;
-  background: #ffeed2;
-  font-size: 16px;
-  line-height: 19px;  
-  h3 {
-    margin-top: 15px;
-    width: 100%;
-    text-align: center;
-    color: #898989;
   }
 `;
