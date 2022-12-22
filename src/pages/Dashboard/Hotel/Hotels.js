@@ -7,14 +7,14 @@ import useHotel from '../../../hooks/api/useHotel.js';
 import { useState } from 'react';
 import Button from '../../../components/Form/Button.js';
 
-function MapHotels({ hotel, header }) {
+function MapHotels({ hotel, header, newBooking }) {
   return(
     <>
       <StyledTypography variant="h6">{ header }</StyledTypography>        
       <CardsContainer>
         {
           hotel ? hotel.map((hotel) => (
-            <HotelCard hotel={hotel} key={hotel.id}/>
+            <HotelCard hotel={hotel} newBooking={newBooking} key={hotel.id}/>
           )
           )
             :
@@ -31,7 +31,6 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
   const [changeRoom, setChangeRoom] = useState(false);
   let header = 'Primeiro, escolha seu hotel:';  
   if(!hotels) return [];
-  console.log({ booking, newBooking, changeRoom, isClicked });
  
   if((!booking && !newBooking) || (changeRoom && !isClicked)) { 
     hotels.forEach((hotel) => hotel.reserved = false);  
@@ -40,14 +39,14 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
   header = 'Você já escolheu seu quarto:';
 
   const oneHotel = hotels.filter( (hotel) => booking ? booking.Room.hotelId === hotel.id : newBooking.Room.hotelId === hotel.id);
-  
+
   oneHotel[0]['reserved']=true;
 
   oneHotel[0]['selectHotels']=selectHotels;
 
   return (
     <>
-      <MapHotels hotel={oneHotel} header={header} />
+      <MapHotels hotel={oneHotel} newBooking={newBooking} header={header} />
       <Button onClick={() => {setChangeRoom(true); setIsClicked(false);}}>Trocar de Quarto</Button>
     </>
   );

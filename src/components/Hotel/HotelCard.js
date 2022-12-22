@@ -4,7 +4,7 @@ import HotelContext from '../../contexts/HotelContext';
 import useHotelRooms from '../../hooks/api/useHotelRooms';
 import useBooking from '../../hooks/api/useBooking';
 
-export default function HotelCard({ hotel }) {
+export default function HotelCard({ hotel, newBooking }) {
   const { rooms } = useHotelRooms(hotel.id);
   const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   const [capacity, setCapacity] = useState(0);
@@ -64,8 +64,10 @@ export default function HotelCard({ hotel }) {
     if(reserved && booking) {      
       const roomName = booking.Room.name;
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
+      console.log(hotel.Rooms.filter(room => room.id === newBooking?.Room.id || room.id === booking?.Room.id));
+      console.log({ hotel, booking, newBooking });
 
-      const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
+      const roomBookings = hotel.Rooms.find(room => {return room.id === booking.Room.id || room.id === newBooking?.Room.id;})._count.Booking;
       const roomOccupants = roomBookings - 1;
       cont = defineRoomOccupation(roomOccupants);
 
