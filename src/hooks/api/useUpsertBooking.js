@@ -10,7 +10,7 @@ export default function useUpsertBooking() {
     loading: newBookingLoading,
     error: newBookingError,
     act: postNewBooking
-  } = useAsync((data) => bookingApi.createOrUpdateBooking(data, token));
+  } = useAsync((data) => bookingApi.createOrUpdateBooking(data, token), false);
 
   return {
     newBooking,

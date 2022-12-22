@@ -4,7 +4,7 @@ import OptionBoxStyle from '../../../components/Payment/OptionBoxStyle';
 import TicketTypeContainer from '../../../components/Payment/TicketTypeContainer';
 import TicketSummaryMessage from './TicketSummaryMessage';
 
-export default function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId }) {
+export default function HotelsOptions({ ticketTypes, selectedType, setTicketTypeId, ticketTypeId,  setIsReserved }) {
   const [hotelType, setHotelType] = useState({});
   if (Object.keys(selectedType).length === 0) return '';
   
@@ -26,7 +26,7 @@ export default function HotelsOptions({ ticketTypes, selectedType, setTicketType
           ))}
       </div>
       {hotelType.name ? (
-        <TicketSummaryMessage selectedOption={hotelType} ticketTypeId={ticketTypeId} />
+        <TicketSummaryMessage selectedOption={hotelType} ticketTypeId={ticketTypeId}  setIsReserved={setIsReserved}/>
       ) : (
         ''            
       )}

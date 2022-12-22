@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import HotelContext from '../../contexts/HotelContext';
 import useBooking from '../../hooks/api/useBooking';
 
-export default function HotelCard({ hotel }) {
+export default function HotelCard({ hotel, newBooking }) {
   const { setSelectedHotel, selectedHotel } = useContext(HotelContext);
   const [capacity, setCapacity] = useState(0);
   const [roomTypes, setRoomTypes] = useState('');
@@ -63,8 +63,8 @@ export default function HotelCard({ hotel }) {
       const roomName = booking.Room.name;
       const roomType = roomTypeCorrespondence[booking.Room.capacity];
 
-      const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id)[0]._count.Booking;
-      const roomOccupants = roomBookings - 1;
+      const roomBookings = hotel.Rooms.filter(room => room.id === booking.Room.id || room.id === newBooking?.Room.id)[0]._count.Booking;
+      const roomOccupants = newBooking ? roomBookings : roomBookings - 1;
       cont = defineRoomOccupation(roomOccupants);
 
       header = 'Quarto reservado';

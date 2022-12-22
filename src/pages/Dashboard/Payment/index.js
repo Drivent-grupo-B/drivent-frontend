@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ForbiddenPage from '../../../components/Dashboard/ForbiddenPage';
 import useEnrollment from '../../../hooks/api/useEnrollment';
@@ -18,14 +18,15 @@ import PaymentHead from '../../../components/Payment/PaymentHead';
 export default function Payment() {
   const { enrollment } = useEnrollment();
   const { ticketTypes } = useTicketTypes();
-  const { ticket } = useTicket(); 
+  const { ticket } = useTicket();
+  const [isReserved, setIsReserved] = useState(false);
 
   const [selectedType, setSelectedType] = useState({});
   const [ticketTypeId, setTicketTypeId] = useState(0);
 
   function renderEventOrPayment() {
     return (
-      !ticket ?
+      !ticket && !isReserved ?
         <>
           <EventTypes
             ticketTypes={ticketTypes}
@@ -34,18 +35,19 @@ export default function Payment() {
             setTicketTypeId={setTicketTypeId}
           />
           {selectedType.name === 'Online' ? (
-            <TicketSummaryMessage selectedOption={selectedType} ticketTypeId={ticketTypeId} />
+            <TicketSummaryMessage selectedOption={selectedType} ticketTypeId={ticketTypeId} setIsReserved={setIsReserved}/>
           ) : (
             <HotelsOptions 
               ticketTypes={ticketTypes} 
               selectedType={selectedType}
               ticketTypeId={ticketTypeId}   
               setTicketTypeId={setTicketTypeId} 
+              setIsReserved={setIsReserved}
             />
             
           )}
         </> :
-        <PaymentStatusName ticket={ticket} />
+        <PaymentStatusName />
     );
   }
 
@@ -61,8 +63,9 @@ export default function Payment() {
   );
 }
 
-function PaymentStatusName({ ticket }) {
-  const type = ticket.TicketType;
+function PaymentStatusName() {
+  const { ticket } = useTicket();
+  const type = ticket?.TicketType;
 
   function renderTicketOption() {
     if (type.isRemote) return 'Online';
@@ -94,7 +97,13 @@ function PaymentStatusName({ ticket }) {
 }
 
 function PaymentData({ ticket }) {
-  const [ newTicket, setNewTicket ] = useState({ ...ticket });
+  const [newTicket, setNewTicket] = useState({ ...ticket });
+
+  useEffect(() => {
+    if (ticket) {
+      setNewTicket({ ...ticket });
+    }
+  }, [ticket]);
   
   return (
     <>
