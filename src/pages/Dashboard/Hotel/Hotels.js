@@ -38,7 +38,7 @@ function selectHotels({ isClicked, setIsClicked, newBooking }) {
   }
   header = 'Você já escolheu seu quarto:';
 
-  const oneHotel = hotels.filter( (hotel) => booking ? booking.Room.hotelId === hotel.id : newBooking.Room.hotelId === hotel.id);
+  const oneHotel = hotels.filter( (hotel) => newBooking ? newBooking.Room.hotelId === hotel.id : booking.Room.hotelId === hotel.id);
 
   oneHotel[0]['reserved']=true;
 
