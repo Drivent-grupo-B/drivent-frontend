@@ -1,14 +1,18 @@
 import { Typography } from '@material-ui/core';
 import { useState } from 'react';
 import styled from 'styled-components';
+import useActivities from '../../../hooks/api/useActivities';
 import useActivitiesDays from '../../../hooks/api/useActivitiesDays';
 
 function OneDay(day) {
   const isColored = day.day.id !== day.day.coloredDay;
+  const { activities } = useActivities(day.day.id);
+
   function choiceSelect() {
-    day.day.setSchedule({ dayId: day.day.id });
+    day.day.setSchedule({ dayId: day.day.id, activities });
     day.day.setColoredDay(day.day.id);
   }
+
   return(
     <DayContainer color={isColored} onClick={ choiceSelect }>{day.children}</DayContainer>
   );
@@ -24,7 +28,7 @@ function MapDays(days) {
       .replace(/-feira,/g, ' ');
 
     return (
-      <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, schedule: days.schedule, key: index, coloredDay, setColoredDay }} >
+      <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, key: index, coloredDay, setColoredDay }} >
         { dayFormat }
       </OneDay>
     );
@@ -41,7 +45,7 @@ export default function DaysEvent({ schedule }) {
           Primeiro, filtre pelo dia do evento:
       </StyledTypography>
       <AllDay>
-        { MapDays( { days, setSchedule: schedule.setSchedule, schedule: schedule.schedule } ) }
+        { MapDays( { days, setSchedule: schedule.setSchedule } ) }
       </AllDay>
     </>
   );

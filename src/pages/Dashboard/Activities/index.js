@@ -42,7 +42,7 @@ export default function Activities() {
       </ActivitContainer>
       { 
         schedule ? 
-          <ScheduleEvent schedule={{ schedule, setSchedule }} />  
+          <ScheduleEvent activities={schedule.activities} />  
           : 
           '' 
       }
