@@ -23,9 +23,11 @@ function MapDays(days) {
   if(!days.days) return [];
 
   return days.days.map((day, index) => {
-    const dayFormat = new Date(day.Day)
+    const dayFormatAux = new Date(day.Day)
       .toLocaleDateString('pt-Br', { weekday: 'long',  month: '2-digit', day: 'numeric' })
-      .replace(/-feira,/g, ' ');
+      .replace(/-feira/g, '');
+    
+    const dayFormat = dayFormatAux[0].toUpperCase() + dayFormatAux.substring(1);
 
     return (
       <OneDay key={ index } day={{ id: day.id, setSchedule: days.setSchedule, key: index, coloredDay, setColoredDay }} >
@@ -74,5 +76,10 @@ const DayContainer = styled.div`
     display: flex ;
     align-items: center ;
     justify-content: center ;
-    cursor: pointer;
+    
+
+    &:hover{
+      cursor: pointer;
+      filter: brightness(0.95);
+    }
 `;

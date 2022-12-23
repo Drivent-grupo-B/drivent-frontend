@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FaDoorOpen } from 'react-icons/fa';
+import { CgEnter, CgCloseO } from 'react-icons/cg';
 import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
 
 export default function ScheduleEvent({ activities }) {
@@ -38,6 +38,9 @@ function ActivityRoomItinerary({ room, activities }) {
     const capacity = activity.capacity;
     const vacancies = capacity - totalEntries;
 
+    if(vacancies === 0) {
+      return 'Esgotado';
+    } 
     if(vacancies === 1) return `${vacancies} vaga`;
 
     return `${vacancies} vagas`;
@@ -52,13 +55,18 @@ function ActivityRoomItinerary({ room, activities }) {
             if (activity.ActivityRoomId !== room.id) return<></>;
 
             return (
-              <ActivityWrapper key={activity.id} height={calculateActivityTime(activity.startTime, activity.endTime)}>
+              <ActivityWrapper 
+                key={activity.id} 
+                height={calculateActivityTime(activity.startTime, activity.endTime)} 
+                capacity={activity.capacity}
+                entries={activity.Entry.length}
+              >
                 <div className='activity-details'>
                   <b>{ activity.name }</b>
                   <p>{ renderActivityPeriod(activity.startTime, activity.endTime) }</p>
                 </div>
                 <div className='activity-occupancy'>
-                  <FaDoorOpen />
+                  {activity.capacity === activity.Entry.length ? <CgCloseO /> : <CgEnter />}
                   <p>{renderTotalVacancies(activity)}</p>
                 </div>
               </ActivityWrapper>
@@ -148,6 +156,11 @@ const ActivityWrapper = styled.div`
   }
 
   & {
-    color: ${props => props.full ? '#CC6666' : '#078632'};
+    color: ${props => props.capacity === props.entries ? '#CC6666' : '#078632'};
+  }
+
+  &:hover {
+    cursor: ${props => props.capacity === props.entries ? 'default' : 'pointer'};
+    filter: ${props => props.capacity === props.entries ? 'none' : 'brightness(0.95)'};
   }
 `;
