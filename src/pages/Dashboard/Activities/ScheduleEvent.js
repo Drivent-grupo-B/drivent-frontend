@@ -38,9 +38,7 @@ function ActivityRoomItinerary({ room, activities }) {
     const capacity = activity.capacity;
     const vacancies = capacity - totalEntries;
 
-    if(vacancies === 0) {
-      return 'Esgotado';
-    } 
+    if(vacancies <= 0) return 'Esgotado';
     if(vacancies === 1) return `${vacancies} vaga`;
 
     return `${vacancies} vagas`;
@@ -66,7 +64,7 @@ function ActivityRoomItinerary({ room, activities }) {
                   <p>{ renderActivityPeriod(activity.startTime, activity.endTime) }</p>
                 </div>
                 <div className='activity-occupancy'>
-                  {activity.capacity === activity.Entry.length ? <CgCloseO /> : <CgEnter />}
+                  {activity.capacity <= activity.Entry.length ? <CgCloseO /> : <CgEnter />}
                   <p>{renderTotalVacancies(activity)}</p>
                 </div>
               </ActivityWrapper>
@@ -156,11 +154,11 @@ const ActivityWrapper = styled.div`
   }
 
   & {
-    color: ${props => props.capacity === props.entries ? '#CC6666' : '#078632'};
+    color: ${props => props.capacity <= props.entries ? '#CC6666' : '#078632'};
   }
 
   &:hover {
-    cursor: ${props => props.capacity === props.entries ? 'default' : 'pointer'};
-    filter: ${props => props.capacity === props.entries ? 'none' : 'brightness(0.95)'};
+    cursor: ${props => props.capacity <= props.entries ? 'default' : 'pointer'};
+    filter: ${props => props.capacity <= props.entries ? 'none' : 'brightness(0.95)'};
   }
 `;
