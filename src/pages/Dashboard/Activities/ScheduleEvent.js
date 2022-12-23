@@ -33,6 +33,16 @@ function ActivityRoomItinerary({ room, activities }) {
     return `${startHour}:00 - ${endHour}:00`;
   }
 
+  function renderTotalVacancies(activity) {
+    const totalEntries = activity.Entry.length;
+    const capacity = activity.capacity;
+    const vacancies = capacity - totalEntries;
+
+    if(vacancies === 1) return `${vacancies} vaga`;
+
+    return `${vacancies} vagas`;
+  }
+
   return (
     <div>
       <h2>{ room.name }</h2>
@@ -49,7 +59,7 @@ function ActivityRoomItinerary({ room, activities }) {
                 </div>
                 <div className='activity-occupancy'>
                   <FaDoorOpen />
-                  <p>27 vagas</p>
+                  <p>{renderTotalVacancies(activity)}</p>
                 </div>
               </ActivityWrapper>
             );
