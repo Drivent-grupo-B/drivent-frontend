@@ -29,3 +29,13 @@ export async function getActivitiesRoom(token, dayId) {
 
   return response.data;
 };
+
+export async function createEntry(body, token) {
+  const response = await api.post('/activities/entry', body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

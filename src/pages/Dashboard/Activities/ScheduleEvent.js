@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { CgEnter, CgCloseO } from 'react-icons/cg';
 import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
+import useCreateEntry from '../../../hooks/api/useCreateEntry';
+import { toast } from 'react-toastify';
 
 export default function ScheduleEvent({ activities }) {
   const { activitiesRooms } = useActivitiesRooms();
@@ -15,6 +17,7 @@ export default function ScheduleEvent({ activities }) {
 }
 
 function ActivityRoomItinerary({ room, activities }) {
+  const { createEntry } = useCreateEntry(); 
   function getDateHours(date) {
     return (new Date(date)).getHours();
   }
@@ -44,6 +47,15 @@ function ActivityRoomItinerary({ room, activities }) {
     return `${vacancies} vagas`;
   }
 
+  function entryActivity(activityId) {        
+    try {
+      createEntry({ activityId });      
+      toast('Matrícula realizada com sucesso!');
+    } catch (error) {
+      toast('Não foi possível se matricular nessa atividade!');
+    }
+  }
+
   return (
     <div>
       <h2>{ room.name }</h2>
@@ -63,7 +75,7 @@ function ActivityRoomItinerary({ room, activities }) {
                   <b>{ activity.name }</b>
                   <p>{ renderActivityPeriod(activity.startTime, activity.endTime) }</p>
                 </div>
-                <div className='activity-occupancy'>
+                <div className='activity-occupancy' onClick={() => entryActivity(activity.id)}>
                   {activity.capacity <= activity.Entry.length ? <CgCloseO /> : <CgEnter />}
                   <p>{renderTotalVacancies(activity)}</p>
                 </div>
@@ -140,7 +152,7 @@ const ActivityWrapper = styled.div`
     font-weight: 700;
   }
 
-  .acticity-occupancy {
+  .activity-occupancy {
     width: 20%;
     display: flex;
     flex-direction: column;
