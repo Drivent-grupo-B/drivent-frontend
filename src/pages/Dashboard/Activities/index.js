@@ -16,7 +16,7 @@ function DescriptionChoice( ticket ) {
     );
   }
   
-  if( !ticket.ticketTypeId.isRemote ) {
+  if( ticket.TicketType.isRemote ) {
     return(
       <CenterContainer>
         Você não precisa escolher as atividades
@@ -34,7 +34,7 @@ export default function Activities() {
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
       <ActivitContainer>
         { 
-          !ticket ?
+          !ticket || ticket?.status === 'RESERVED' || ticket?.TicketType.isRemote  ?
             DescriptionChoice(ticket)
             :
             <DaysEvent schedule={{ schedule, setSchedule }}/>
