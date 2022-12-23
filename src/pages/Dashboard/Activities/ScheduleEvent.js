@@ -47,9 +47,9 @@ function ActivityRoomItinerary({ room, activities }) {
     return `${vacancies} vagas`;
   }
 
-  function entryActivity(activityId) {        
+  async function entryActivity(activityId) {        
     try {
-      createEntry({ activityId });      
+      await createEntry({ activityId });      
       toast('Matrícula realizada com sucesso!');
     } catch (error) {
       toast('Não foi possível se matricular nessa atividade!');
