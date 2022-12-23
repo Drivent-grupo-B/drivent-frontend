@@ -1,8 +1,10 @@
 import styled from 'styled-components';
-import { CgEnter, CgCloseO } from 'react-icons/cg';
+import { CgEnter, CgCloseO, CgCheckO } from 'react-icons/cg';
 import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
 import useCreateEntry from '../../../hooks/api/useCreateEntry';
 import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import UserContext from '../../../contexts/UserContext';
 
 export default function ScheduleEvent({ activities }) {
   const { activitiesRooms } = useActivitiesRooms();
@@ -18,6 +20,7 @@ export default function ScheduleEvent({ activities }) {
 
 function ActivityRoomItinerary({ room, activities }) {
   const { createEntry } = useCreateEntry(); 
+  const { userData } = useContext(UserContext);
   function getDateHours(date) {
     return (new Date(date)).getHours();
   }
@@ -40,20 +43,24 @@ function ActivityRoomItinerary({ room, activities }) {
     const totalEntries = activity.Entry.length;
     const capacity = activity.capacity;
     const vacancies = capacity - totalEntries;
-
+    const isEntried = (activity.Entry.filter((entry) => entry.userId === userData.user.id)).length;
+    
+    if (isEntried) return 'Inscrito';
     if(vacancies <= 0) return 'Esgotado';
     if(vacancies === 1) return `${vacancies} vaga`;
 
     return `${vacancies} vagas`;
   }
 
-  async function entryActivity(activityId) {        
-    try {
-      await createEntry({ activityId });      
-      toast('Matrícula realizada com sucesso!');
-    } catch (error) {
-      toast('Não foi possível se matricular nessa atividade!');
-    }
+  async function entryActivity(activityId, activityStatus) {  
+    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado')) {
+      try {
+        await createEntry({ activityId });      
+        toast('Matrícula realizada com sucesso!');
+      } catch (error) {
+        toast('Você já tem uma atividade nesse horário!');
+      }
+    }    
   }
 
   return (
@@ -63,21 +70,22 @@ function ActivityRoomItinerary({ room, activities }) {
         {
           activities.map(activity => {
             if (activity.ActivityRoomId !== room.id) return<></>;
-
+            const activityStatus = renderTotalVacancies(activity);
             return (
               <ActivityWrapper 
                 key={activity.id} 
                 height={calculateActivityTime(activity.startTime, activity.endTime)} 
                 capacity={activity.capacity}
                 entries={activity.Entry.length}
+                activityStatus={activityStatus}
               >
                 <div className='activity-details'>
                   <b>{ activity.name }</b>
                   <p>{ renderActivityPeriod(activity.startTime, activity.endTime) }</p>
                 </div>
-                <div className='activity-occupancy' onClick={() => entryActivity(activity.id)}>
-                  {activity.capacity <= activity.Entry.length ? <CgCloseO /> : <CgEnter />}
-                  <p>{renderTotalVacancies(activity)}</p>
+                <div className='activity-occupancy' onClick={() => entryActivity(activity.id, activityStatus)}>
+                  {activityStatus === 'Inscrito' ? <CgCheckO /> : activityStatus === 'Esgotado' ? <CgCloseO /> : <CgEnter />}
+                  <p>{activityStatus}</p>
                 </div>
               </ActivityWrapper>
             );
@@ -126,7 +134,7 @@ const ActivityWrapper = styled.div`
   height: ${props => props.height*80}px;
   padding: 12px 10px;
   margin-bottom: 10px;
-  background-color: #F1F1F1;
+  background-color: ${props => props.activityStatus === 'Inscrito' ? '#D0FFDB' : '#F1F1F1'};
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -166,7 +174,7 @@ const ActivityWrapper = styled.div`
   }
 
   & {
-    color: ${props => props.capacity <= props.entries ? '#CC6666' : '#078632'};
+    color: ${props => props.activityStatus === 'Esgotado' ? '#CC6666' : '#078632'};
   }
 
   &:hover {
