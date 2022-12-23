@@ -49,7 +49,9 @@ export default function HotelCard({ hotel, newBooking }) {
     
     if (roomTypes[2]) return 'Double';
 
-    return 'Triple';
+    if (roomTypes[3]) return 'Triple';
+
+    return 'Sem quartos registrados';
   }
 
   function Reserved(reserved) {
