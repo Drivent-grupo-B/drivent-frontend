@@ -5,6 +5,7 @@ import useCreateTicket from '../../../hooks/api/useCreateTicket';
 
 export default function TicketSummaryMessage({ selectedOption, ticketTypeId, setIsReserved }) {
   const { postCreatedTicket } = useCreateTicket();
+
   const formattedPrice = (selectedOption.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   async function reserveTicket() {
