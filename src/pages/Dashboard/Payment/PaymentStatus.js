@@ -1,11 +1,9 @@
 import CredCard from '../../../hooks/useCredCard';
 import { toast } from 'react-toastify';
 import usePaidTicket from '../../../hooks/api/usePaidTicket';
-import { useState } from 'react';
 import PaymentHead from '../../../components/Payment/PaymentHead';
 
 export default function PaymentStatus({ ticket }) {
-  const [cardComplete, setCardComplete] = useState('');
   const { paid } = usePaidTicket();
   
   async function envCard(card) { 
@@ -38,7 +36,7 @@ export default function PaymentStatus({ ticket }) {
       <PaymentHead>
         Pagamento
       </PaymentHead>
-      <CredCard cardComplete={ cardComplete } setCardComplete={setCardComplete} envCard={envCard} />   
+      <CredCard envCard={envCard} />   
     </>
   );
 }

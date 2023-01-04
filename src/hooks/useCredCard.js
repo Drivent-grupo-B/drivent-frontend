@@ -3,7 +3,7 @@ import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import styled from 'styled-components';
 
-export default function CredCard({ cardComplete, setCardComplete, envCard }) {
+export default function CredCard({ envCard }) {
   const[ card, setCard ] = useState( {
     cvv: '',
     expiry: '',

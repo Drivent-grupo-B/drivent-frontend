@@ -13,6 +13,7 @@ import EventInfoContext from '../../contexts/EventInfoContext';
 import UserContext from '../../contexts/UserContext';
 
 import useSignIn from '../../hooks/api/useSignIn';
+import GitEnter from '../../components/OAuth/GitEnter';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -45,6 +46,7 @@ export default function SignIn() {
         <Title>{eventInfo.title}</Title>
       </Row>
       <Row>
+        <GitEnter />
         <Label>Entrar</Label>
         <form onSubmit={submit}>
           <Input label="E-mail" type="text" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
