@@ -4,12 +4,10 @@ import useCreateEntry from '../../../hooks/api/useCreateEntry';
 import { useContext } from 'react';
 import UserContext from '../../../contexts/UserContext';
 import { CgEnter, CgCloseO, CgCheckO } from 'react-icons/cg';
-import { useState } from 'react';
 
-export default function Activity({ activity, room }) {
+export default function Activity({ activity, room, selectedActivity, setSelectedActivity }) {
   if (activity.ActivityRoomId !== room.id) return <></>;
 
-  const [selectedActivity, setSelectedActivity] = useState('');
   const { createEntry } = useCreateEntry();
   const { userData } = useContext(UserContext);
   const activityStatus = renderTotalVacancies(activity);
