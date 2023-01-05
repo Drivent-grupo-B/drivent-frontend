@@ -44,7 +44,7 @@ export default function Activity({ activity, room, selectedActivity, setSelected
   }
 
   async function entryActivity(activity, activityStatus) {
-    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado')) {
+    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado' || selectedActivity === activity.name)) {
       try {
         await createEntry({ activityId: activity.id });
         setSelectedActivity(activity.name);
@@ -133,7 +133,19 @@ const ActivityWrapper = styled.div`
   }
 
   &:hover {
-    cursor: ${(props) => (props.capacity <= props.entries ? 'default' : 'pointer')};
-    filter: ${(props) => (props.capacity <= props.entries ? 'none' : 'brightness(0.95)')};
+    cursor: ${(props) =>
+    props.capacity <= props.entries ||
+      props.activityStatus === 'Inscrito' ||
+      props.activityStatus === 'Esgotado' ||
+      props.selectedActivity
+      ? 'default'
+      : 'pointer'};
+    filter: ${(props) =>
+    props.capacity <= props.entries ||
+      props.activityStatus === 'Inscrito' ||
+      props.activityStatus === 'Esgotado' ||
+      props.selectedActivity
+      ? 'none'
+      : 'brightness(0.95)'};
   }
 `;
