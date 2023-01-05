@@ -7,9 +7,9 @@ import { CgEnter, CgCloseO, CgCheckO } from 'react-icons/cg';
 import { useState } from 'react';
 
 export default function Activity({ activity, room }) {
-  if (activity.ActivityRoomId !== room.id) return<></>;
+  if (activity.ActivityRoomId !== room.id) return <></>;
 
-  const [isActivitySelected, setIsActivitySelected] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState('');
   const { createEntry } = useCreateEntry();
   const { userData } = useContext(UserContext);
   const activityStatus = renderTotalVacancies(activity);
@@ -45,10 +45,11 @@ export default function Activity({ activity, room }) {
     return `${vacancies} vagas`;
   }
 
-  async function entryActivity(activityId, activityStatus) {
+  async function entryActivity(activity, activityStatus) {
     if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado')) {
       try {
-        await createEntry({ activityId });
+        await createEntry({ activityId: activity.id });
+        setSelectedActivity(activity.name);
         toast('Matrícula realizada com sucesso!');
       } catch (error) {
         toast('Você já tem uma atividade nesse horário!');
@@ -61,16 +62,24 @@ export default function Activity({ activity, room }) {
       height={calculateActivityTime(activity.startTime, activity.endTime)}
       capacity={activity.capacity}
       entries={activity.Entry.length}
+      name={activity.name}
+      selectedActivity={selectedActivity}
       activityStatus={activityStatus}
-      onClick={() => entryActivity(activity.id, activityStatus)}
+      onClick={() => entryActivity(activity, activityStatus)}
     >
       <div className="activity-details">
         <b>{activity.name}</b>
         <p>{renderActivityPeriod(activity.startTime, activity.endTime)}</p>
       </div>
       <div className="activity-occupancy">
-        {activityStatus === 'Inscrito' ? <CgCheckO /> : activityStatus === 'Esgotado' ? <CgCloseO /> : <CgEnter />}
-        <p>{activityStatus}</p>
+        {activityStatus === 'Inscrito' || selectedActivity === activity.name ? (
+          <CgCheckO />
+        ) : activityStatus === 'Esgotado' ? (
+          <CgCloseO />
+        ) : (
+          <CgEnter />
+        )}
+        <p>{selectedActivity === activity.name ? 'Inscrito' : activityStatus}</p>
       </div>
     </ActivityWrapper>
   );
@@ -81,7 +90,8 @@ const ActivityWrapper = styled.div`
   height: ${(props) => props.height * 80}px;
   padding: 12px 10px;
   margin-bottom: 10px;
-  background-color: ${(props) => (props.activityStatus === 'Inscrito' ? '#D0FFDB' : '#F1F1F1')};
+  background-color: ${(props) =>
+    props.activityStatus === 'Inscrito' || props.selectedActivity === props.name ? '#D0FFDB' : '#F1F1F1'};
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
