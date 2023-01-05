@@ -54,6 +54,7 @@ export default function Activity({ activity, room, selectedActivity, setSelected
       }
     }
   }
+  
   return (
     <ActivityWrapper
       key={activity.id}
@@ -137,14 +138,14 @@ const ActivityWrapper = styled.div`
     props.capacity <= props.entries ||
       props.activityStatus === 'Inscrito' ||
       props.activityStatus === 'Esgotado' ||
-      props.selectedActivity
+      props.selectedActivity === props.name
       ? 'default'
       : 'pointer'};
     filter: ${(props) =>
     props.capacity <= props.entries ||
       props.activityStatus === 'Inscrito' ||
       props.activityStatus === 'Esgotado' ||
-      props.selectedActivity
+      props.selectedActivity === props.name
       ? 'none'
       : 'brightness(0.95)'};
   }
