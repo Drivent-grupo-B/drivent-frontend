@@ -42,7 +42,7 @@ export default function Activities() {
       </ActivitContainer>
       { 
         schedule ? 
-          <ScheduleEvent activities={schedule.activities} />  
+          <ScheduleEvent activities={schedule.activities} dayId={schedule.dayId} />  
           : 
           '' 
       }

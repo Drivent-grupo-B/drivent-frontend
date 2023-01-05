@@ -14,7 +14,7 @@ function OneDay(day) {
   }
 
   return(
-    <DayContainer color={isColored} onClick={ choiceSelect }>{day.children}</DayContainer>
+    <DayContainer colored={isColored} onClick={ choiceSelect }>{day.children}</DayContainer>
   );
 }
 
@@ -70,7 +70,7 @@ const DayContainer = styled.div`
     margin: 0px 15px 15px 0px ;
     width: 150px;
     height: 37px;
-    background: ${props => props.color ? '#E0E0E0': '#FFD37D' };
+    background: ${props => props.colored ? '#E0E0E0': '#FFD37D' };
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     display: flex ;
