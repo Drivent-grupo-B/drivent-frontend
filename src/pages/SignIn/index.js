@@ -46,12 +46,12 @@ export default function SignIn() {
         <Title>{eventInfo.title}</Title>
       </Row>
       <Row>
-        <GitEnter />
         <Label>Entrar</Label>
         <form onSubmit={submit}>
           <Input label="E-mail" type="text" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
           <Input label="Senha" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
           <Button type="submit" color="primary" fullWidth disabled={loadingSignIn}>Entrar</Button>
+          <GitEnter />
         </form>
       </Row>
       <Row>

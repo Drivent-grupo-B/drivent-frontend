@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import git from '../../assets/images/git.svg';
 import { Label } from '../Auth';
 
@@ -8,6 +7,7 @@ import useOathgitCode from '../../hooks/api/useOauthGitCode';
 import useOathgitPost from '../../hooks/api/useOathgitPost';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ButtonGitEnter from './ButtonGitEnter';
 
 export default function GitEnter() {
   const { setUserData } = useContext(UserContext);
@@ -33,26 +33,9 @@ export default function GitEnter() {
     }
   }  
   return(
-    <GitContainer onClick={ useOathgitCode }>
+    <ButtonGitEnter variant='contained' onClick={ useOathgitCode } color='primary' fullWidth>
       <img src={ git }/>
-      <Label>Logar com o github</Label>  
-    </GitContainer>
+      <Label>Log in with GitHub</Label>  
+    </ButtonGitEnter>
   );
 };
-
-const GitContainer = styled.div`
-  height: 80px;
-  width: 100% ;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #3f51b5;
-  border-radius: 5px;
-  margin: 0px 0px 10px 0px ;
-  
-  img{
-    margin-right: 10px;
-    height: 100px;
-    width: 90px ;
-  }
-`;
