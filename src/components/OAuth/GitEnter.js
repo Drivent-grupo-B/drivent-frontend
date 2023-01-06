@@ -11,11 +11,20 @@ import { toast } from 'react-toastify';
 
 export default function GitEnter() {
   const { setUserData } = useContext(UserContext);
+  const { postOathgit } = useOathgitPost();
+
   const navigate = useNavigate();
   const code = new URLSearchParams(window.location.search).get('code');
+
   if( code ) {
+    window.history.pushState('object or string', 'Title', '/sign-in');
+    loginGit();
+  }
+  
+  async function loginGit() {
     try {
-      const { oathgitPost } = useOathgitPost(code);
+      const oathgitPost = await postOathgit(code);
+      if ( !oathgitPost ) return Error; 
       setUserData(oathgitPost);
       toast('Login realizado com sucesso!');
       navigate('/dashboard');  
@@ -25,7 +34,7 @@ export default function GitEnter() {
   }  
   return(
     <GitContainer onClick={ useOathgitCode }>
-      <img src={git}/>
+      <img src={ git }/>
       <Label>Logar com o github</Label>  
     </GitContainer>
   );

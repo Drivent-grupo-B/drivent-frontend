@@ -2,18 +2,12 @@ import useAsync from '../useAsync';
 
 import * as oathgitApi from '../../services/oathgitApi';
 
-export default function useOathgitPost(code) {
+export default function useOathgitPost() {
   const {
-    data: oathgitPost,
-    loading: oathgitPostLoading,
-    error: oathgitPostError,
     act: postOathgit
-  } = useAsync(oathgitApi.postOathgit(code));
-
+  } = useAsync(oathgitApi.postOathgit, false);
+ 
   return {
-    oathgitPost,
-    oathgitPostLoading,
-    oathgitPostError,
     postOathgit
   };
 }
