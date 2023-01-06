@@ -16,7 +16,7 @@ export default function ScheduleEvent({ activities }) {
 }
 
 function ActivityRoomItinerary({ room, activities }) {
-  const [selectedActivity, setSelectedActivity] = useState('');
+  const [selectedActivity, setSelectedActivity] = useState([]);
 
   return (
     <div>

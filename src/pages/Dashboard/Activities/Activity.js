@@ -44,10 +44,10 @@ export default function Activity({ activity, room, selectedActivity, setSelected
   }
 
   async function entryActivity(activity, activityStatus) {
-    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado' || selectedActivity === activity.name)) {
+    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado' || selectedActivity.find((act) => act === activity.name))) {
       try {
         await createEntry({ activityId: activity.id });
-        setSelectedActivity(activity.name);
+        setSelectedActivity([...selectedActivity, activity.name]);
         toast('Matrícula realizada com sucesso!');
       } catch (error) {
         toast('Você já tem uma atividade nesse horário!');
@@ -61,8 +61,7 @@ export default function Activity({ activity, room, selectedActivity, setSelected
       height={calculateActivityTime(activity.startTime, activity.endTime)}
       capacity={activity.capacity}
       entries={activity.Entry.length}
-      name={activity.name}
-      selectedActivity={selectedActivity}
+      selectedActivity={selectedActivity.find((act) => act === activity.name)}
       activityStatus={activityStatus}
       onClick={() => entryActivity(activity, activityStatus)}
     >
@@ -71,14 +70,14 @@ export default function Activity({ activity, room, selectedActivity, setSelected
         <p>{renderActivityPeriod(activity.startTime, activity.endTime)}</p>
       </div>
       <div className="activity-occupancy">
-        {activityStatus === 'Inscrito' || selectedActivity === activity.name ? (
+        {activityStatus === 'Inscrito' || selectedActivity.find((act) => act === activity.name) ? (
           <CgCheckO />
         ) : activityStatus === 'Esgotado' ? (
           <CgCloseO />
         ) : (
           <CgEnter />
         )}
-        <p>{selectedActivity === activity.name ? 'Inscrito' : activityStatus}</p>
+        <p>{selectedActivity.find((act) => act === activity.name) ? 'Inscrito' : activityStatus}</p>
       </div>
     </ActivityWrapper>
   );
@@ -90,7 +89,7 @@ const ActivityWrapper = styled.div`
   padding: 12px 10px;
   margin-bottom: 10px;
   background-color: ${(props) =>
-    props.activityStatus === 'Inscrito' || props.selectedActivity === props.name ? '#D0FFDB' : '#F1F1F1'};
+    props.activityStatus === 'Inscrito' || props.selectedActivity ? '#D0FFDB' : '#F1F1F1'};
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -138,14 +137,14 @@ const ActivityWrapper = styled.div`
     props.capacity <= props.entries ||
       props.activityStatus === 'Inscrito' ||
       props.activityStatus === 'Esgotado' ||
-      props.selectedActivity === props.name
+      props.selectedActivity
       ? 'default'
       : 'pointer'};
     filter: ${(props) =>
     props.capacity <= props.entries ||
       props.activityStatus === 'Inscrito' ||
       props.activityStatus === 'Esgotado' ||
-      props.selectedActivity === props.name
+      props.selectedActivity
       ? 'none'
       : 'brightness(0.95)'};
   }
