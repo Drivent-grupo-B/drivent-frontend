@@ -12,6 +12,7 @@ import Link from '../../components/Link';
 import EventInfoContext from '../../contexts/EventInfoContext';
 
 import useSignUp from '../../hooks/api/useSignUp';
+import GitEnter from '../../components/OAuth/GitEnter';
 
 export default function Enroll() {
   const [email, setEmail] = useState('');
@@ -55,6 +56,7 @@ export default function Enroll() {
           <Button type="submit" color="primary" fullWidth disabled={loadingSignUp}>Inscrever</Button>
         </form>
       </Row>
+      <GitEnter />
       <Row>
         <Link to="/sign-in">Já está inscrito? Faça login</Link>
       </Row>
