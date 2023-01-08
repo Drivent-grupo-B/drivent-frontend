@@ -34,7 +34,7 @@ export default function GitEnter() {
   }  
   return(
     <ButtonGitEnter variant='contained' onClick={ useOathgitCode } color='primary' fullWidth>
-      <img src={ git }/>
+      <img src={ git } alt="GitHub Button"/>
       <Label>Entrar com GitHub</Label>  
     </ButtonGitEnter>
   );
