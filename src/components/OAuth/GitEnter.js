@@ -16,25 +16,25 @@ export default function GitEnter() {
   const navigate = useNavigate();
   const code = new URLSearchParams(window.location.search).get('code');
 
-  if( code ) {
+  if (code) {
     window.history.pushState('object or string', 'Title', '/sign-in');
     loginGit();
   }
-  
+
   async function loginGit() {
     try {
       const oathgitPost = await postOathgit(code);
-      if ( !oathgitPost ) return Error; 
+      if (!oathgitPost) return Error;
       setUserData(oathgitPost);
       toast('Login realizado com sucesso!');
-      navigate('/dashboard');  
+      navigate('/dashboard');
     } catch (error) {
       toast('Não foi possível fazer o login!');
     }
   }  
   return(
     <ButtonGitEnter variant='contained' onClick={ useOathgitCode } color='primary' fullWidth>
-      <img src={ git } alt="GitHub Button"/>
+      <img src={ git } alt='GitHub Button'/>
       <Label>Entrar com GitHub</Label>  
     </ButtonGitEnter>
   );
