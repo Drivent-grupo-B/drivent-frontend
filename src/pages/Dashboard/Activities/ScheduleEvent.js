@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import ActivitiesContainer from '../../../components/Activities/ActivitiesContainer';
 import useActivitiesRooms from '../../../hooks/api/useActivitiesRooms';
 import Activity from './Activity';
 
@@ -16,7 +17,7 @@ export default function ScheduleEvent({ activities }) {
 }
 
 function ActivityRoomItinerary({ room, activities }) {
-  const [selectedActivity, setSelectedActivity] = useState('');
+  const [selectedActivity, setSelectedActivity] = useState([]);
 
   return (
     <div>
@@ -45,20 +46,5 @@ const ScheduleContainer = styled.section`
     font-size: 17px;
     margin-bottom: 13px;
     color: #7b7b7b;
-  }
-`;
-
-const ActivitiesContainer = styled.div`
-  width: 100%;
-  height: 350px;
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #d7d7d7;
-  overflow: scroll;
-
-  ::-webkit-scrollbar {
-    display: none;
   }
 `;

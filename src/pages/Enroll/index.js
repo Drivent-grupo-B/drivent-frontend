@@ -12,6 +12,7 @@ import Link from '../../components/Link';
 import EventInfoContext from '../../contexts/EventInfoContext';
 
 import useSignUp from '../../hooks/api/useSignUp';
+import GitEnter from '../../components/OAuth/GitEnter';
 
 export default function Enroll() {
   const [email, setEmail] = useState('');
@@ -53,6 +54,7 @@ export default function Enroll() {
           <Input label="Senha" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
           <Input label="Repita sua senha" type="password" fullWidth value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
           <Button type="submit" color="primary" fullWidth disabled={loadingSignUp}>Inscrever</Button>
+          <GitEnter />
         </form>
       </Row>
       <Row>

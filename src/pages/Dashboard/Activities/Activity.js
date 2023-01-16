@@ -11,6 +11,7 @@ export default function Activity({ activity, room, selectedActivity, setSelected
   const { createEntry } = useCreateEntry();
   const { userData } = useContext(UserContext);
   const activityStatus = renderTotalVacancies(activity);
+  const isActivityClicked = selectedActivity.find((act) => act === activity.name);
 
   function getDateHours(date) {
     return new Date(date).getHours();
@@ -44,26 +45,32 @@ export default function Activity({ activity, room, selectedActivity, setSelected
   }
 
   async function entryActivity(activity, activityStatus) {
-    if (!(activityStatus === 'Inscrito' || activityStatus === 'Esgotado' || selectedActivity === activity.name)) {
-      try {
-        await createEntry({ activityId: activity.id });
-        setSelectedActivity(activity.name);
-        toast('Matrícula realizada com sucesso!');
-      } catch (error) {
-        toast('Você já tem uma atividade nesse horário!');
-      }
+    if (validateActivitySubscribe(activityStatus, isActivityClicked) || activityStatus === 'Esgotado') return;
+
+    try {
+      await createEntry({ activityId: activity.id });
+      setSelectedActivity([...selectedActivity, activity.name]);
+      toast('Matrícula realizada com sucesso!');
+    } catch (error) {
+      toast('Você já tem uma atividade nesse horário!');
     }
   }
-  
+
+  function validateActivitySubscribe(activityStatus, isActivityClicked) {
+    if (activityStatus === 'Inscrito' || isActivityClicked) {
+      return true;
+    }
+
+    return false;
+  }
+
   return (
     <ActivityWrapper
       key={activity.id}
       height={calculateActivityTime(activity.startTime, activity.endTime)}
       capacity={activity.capacity}
       entries={activity.Entry.length}
-      name={activity.name}
-      selectedActivity={selectedActivity}
-      activityStatus={activityStatus}
+      status={validateActivitySubscribe(activityStatus, isActivityClicked)}
       onClick={() => entryActivity(activity, activityStatus)}
     >
       <div className="activity-details">
@@ -71,14 +78,14 @@ export default function Activity({ activity, room, selectedActivity, setSelected
         <p>{renderActivityPeriod(activity.startTime, activity.endTime)}</p>
       </div>
       <div className="activity-occupancy">
-        {activityStatus === 'Inscrito' || selectedActivity === activity.name ? (
+        {validateActivitySubscribe(activityStatus, isActivityClicked) ? (
           <CgCheckO />
         ) : activityStatus === 'Esgotado' ? (
           <CgCloseO />
         ) : (
           <CgEnter />
         )}
-        <p>{selectedActivity === activity.name ? 'Inscrito' : activityStatus}</p>
+        <p>{isActivityClicked ? 'Inscrito' : activityStatus}</p>
       </div>
     </ActivityWrapper>
   );
@@ -89,8 +96,7 @@ const ActivityWrapper = styled.div`
   height: ${(props) => props.height * 80}px;
   padding: 12px 10px;
   margin-bottom: 10px;
-  background-color: ${(props) =>
-    props.activityStatus === 'Inscrito' || props.selectedActivity === props.name ? '#D0FFDB' : '#F1F1F1'};
+  background-color: ${(props) => (props.status ? '#D0FFDB' : '#F1F1F1')};
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -130,23 +136,11 @@ const ActivityWrapper = styled.div`
   }
 
   & {
-    color: ${(props) => (props.activityStatus === 'Esgotado' ? '#CC6666' : '#078632')};
+    color: ${(props) => (!props.status && props.capacity <= props.entries ? '#CC6666' : '#078632')};
   }
 
   &:hover {
-    cursor: ${(props) =>
-    props.capacity <= props.entries ||
-      props.activityStatus === 'Inscrito' ||
-      props.activityStatus === 'Esgotado' ||
-      props.selectedActivity === props.name
-      ? 'default'
-      : 'pointer'};
-    filter: ${(props) =>
-    props.capacity <= props.entries ||
-      props.activityStatus === 'Inscrito' ||
-      props.activityStatus === 'Esgotado' ||
-      props.selectedActivity === props.name
-      ? 'none'
-      : 'brightness(0.95)'};
+    cursor: ${(props) => (props.capacity <= props.entries || props.status ? 'default' : 'pointer')};
+    filter: ${(props) => (props.capacity <= props.entries || props.status ? 'none' : 'brightness(0.95)')};
   }
 `;

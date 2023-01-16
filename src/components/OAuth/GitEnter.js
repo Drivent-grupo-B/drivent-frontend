@@ -31,11 +31,11 @@ export default function GitEnter() {
     } catch (error) {
       toast('Não foi possível fazer o login!');
     }
-  }
-  return (
-    <ButtonGitEnter variant='contained' onClick={useOathgitCode} color='primary' fullWidth>
-      <img src={ git } />
-      <Label>Log in with GitHub</Label>
+  }  
+  return(
+    <ButtonGitEnter variant='contained' onClick={ useOathgitCode } color='primary' fullWidth>
+      <img src={ git } alt='GitHub Button'/>
+      <Label>Entrar com GitHub</Label>  
     </ButtonGitEnter>
   );
 };
