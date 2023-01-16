@@ -28,7 +28,7 @@ export default function SignIn() {
   
   async function submit(event) {
     event.preventDefault();
-
+    
     try {
       const userData = await signIn(email, password);
       setUserData(userData);
@@ -37,8 +37,8 @@ export default function SignIn() {
     } catch (err) {
       toast('Não foi possível fazer o login!');
     }
-  } 
-
+  }
+  
   return (
     <AuthLayout background={eventInfo.backgroundImageUrl}>
       <Row>

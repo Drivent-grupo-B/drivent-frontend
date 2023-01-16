@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-export default function CredCard({ envCard }) {
-  const[ card, setCard ] = useState( {
+export default function CredCard({ envCard, bottonVal }) {
+  const[ card, setCard ] = useState({
     cvv: '',
     expiry: '',
     focused: '',
@@ -14,9 +15,9 @@ export default function CredCard({ envCard }) {
   });
 
   function cardComplet() {
-    if(card.cvv === '' || card.expiry === '' || card.focused === '' || card.name === '' || card.number === '')return;
-    if(isNaN(Number(card.number) && Number(card.expiry) && Number(card.cvv)) || card.issuer === 'UNKNOWN' ) return;
-    envCard(card);
+    if(card.cvv === '' || card.expiry === '' || card.focused === '' || card.name === '' || card.number === '')return toast('Preencha corretamente os campos do cartão');
+    if(isNaN(Number(card.number) && Number(card.expiry) && Number(card.cvv)) || card.issuer === 'UNKNOWN' ) return toast('Preencha o cartão com dados validos');
+    envCard({ card, setCard });
   }
 
   return (
@@ -79,7 +80,7 @@ export default function CredCard({ envCard }) {
           />
         </form>
       </Allcards>
-      <Button onClick={ cardComplet }>FINALIZAR PAGAMENTO</Button>
+      <Button onClick={ bottonVal ? cardComplet : () => {} }>FINALIZAR PAGAMENTO</Button>
     </div>
   );
 }

@@ -10,4 +10,3 @@ export async function paidTicket(body, token) {
 
   return response.data;
 }
-//
